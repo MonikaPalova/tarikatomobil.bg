@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
 	_ "github.com/go-sql-driver/mysql"
+	"io/ioutil"
 )
 
 type Database struct {
@@ -14,7 +15,7 @@ type Database struct {
 func (d *Database) Connect(user, password, dbName string) error {
 	var err error
 
-	connString := fmt.Sprintf("%s:%s@/%s", user, password, dbName)
+	connString := fmt.Sprintf("%s:%s@/%s?multiStatements=true", user, password, dbName)
 	d.conn, err = sql.Open("mysql", connString)
 	if err != nil {
 		return err
@@ -24,10 +25,12 @@ func (d *Database) Connect(user, password, dbName string) error {
 }
 
 func (d Database) createTables() error {
-	createTableQuery := `CREATE TABLE IF NOT EXISTS USERS (
-    				id VARCHAR(36) NOT NULL PRIMARY KEY,
-    				name VARCHAR(64) NOT NULL)`
-	_, err := d.conn.Exec(createTableQuery)
+	createTableQuery, err := ioutil.ReadFile("./sql/create_tables.sql")
+	if err != nil {
+		return err
+	}
+	_, err = d.conn.Exec(string(createTableQuery))
+	fmt.Println(string(createTableQuery))
 	return err
 }
 
