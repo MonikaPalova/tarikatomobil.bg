@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
 
 CREATE TABLE IF NOT EXISTS `users` (
     `id` VARCHAR(36) NOT NULL PRIMARY KEY,
-    `name` VARCHAR(64) NOT NULL,
+    `name` VARCHAR(64) NOT NULL UNIQUE,
     `email` VARCHAR(64) NOT NULL,
     `phone_number` VARCHAR(15) NOT NULL,
     `photo_id` VARCHAR(36),
