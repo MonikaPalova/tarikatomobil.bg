@@ -8,6 +8,10 @@ import (
 	"io/ioutil"
 )
 
+const (
+	createTablesFile = "./sql/create_tables.sql"
+)
+
 type Database struct {
 	conn *sql.DB
 }
@@ -25,12 +29,11 @@ func (d *Database) Connect(user, password, dbName string) error {
 }
 
 func (d Database) createTables() error {
-	createTableQuery, err := ioutil.ReadFile("./sql/create_tables.sql")
+	createTableQuery, err := ioutil.ReadFile(createTablesFile)
 	if err != nil {
 		return err
 	}
 	_, err = d.conn.Exec(string(createTableQuery))
-	fmt.Println(string(createTableQuery))
 	return err
 }
 
