@@ -55,10 +55,18 @@ func (d Database) GetUsers() ([]model.User, error) {
 }
 
 func (d Database) CreateUser(user model.User) error {
-	stmt, err := d.conn.Prepare("INSERT INTO USERS (id, name) VALUES(?, ?)")
+	insertQuery := `
+		INSERT INTO USERS (id, name, email, phone_number, photo_id, times_passenger, times_driver) 
+		VALUES(?, ?, ?, ?, ?, ?, ?)	`
+	stmt, err := d.conn.Prepare(insertQuery)
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(user.ID, user.Name)
+
+	photoID := &user.PhotoID
+	if len(*photoID) == 0 {
+		photoID = nil
+	}
+	_, err = stmt.Exec(user.ID, user.Name, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
 	return err
 }
