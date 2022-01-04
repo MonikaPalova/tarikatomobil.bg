@@ -1,18 +1,14 @@
 package handlers
 
 import (
-	"encoding/json"
 	. "github.com/MonikaPalova/tarikatomobil.bg/db"
-	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
-	"github.com/MonikaPalova/tarikatomobil.bg/model"
-	"net/http"
 )
 
 type TripsHandler struct {
 	DB Database
 }
 
-func (t TripsHandler) Get(w http.ResponseWriter, r *http.Request) {
+/*func (t TripsHandler) Get(w http.ResponseWriter, r *http.Request) {
 	trips, err := t.DB.GetTrips()
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not fetch trips from DB", err)
@@ -38,3 +34,4 @@ func (t TripsHandler) Post(w http.ResponseWriter, r *http.Request) {
 	// TODO validate reg number is of real car
 
 }
+*/

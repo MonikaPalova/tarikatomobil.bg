@@ -21,9 +21,14 @@ func main() {
 	router := mux.NewRouter()
 
 	usersHandler := UsersHandler{DB: db.UsersDBHandler}
+	photosHandler := PhotoHandler{DB: db.PhotosDBHandler}
 
 	router.Path("/users").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
 	router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)
+
+	router.Path("/photos").Methods(http.MethodPost).HandlerFunc(photosHandler.UploadPhoto)
+	router.Path("/photos/{id}").Methods(http.MethodGet).HandlerFunc(photosHandler.GetPhoto)
+	router.Path("/photos/{id}").Methods(http.MethodDelete).HandlerFunc(photosHandler.DeletePhoto)
 
 	if err := http.ListenAndServe(":80", router); err != nil {
 		log.Fatalf("Could not start server: %s", err.Error())
