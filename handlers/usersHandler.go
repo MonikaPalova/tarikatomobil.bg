@@ -15,9 +15,9 @@ type UsersHandler struct {
 }
 
 func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
-	users, err := u.DB.GetUsers()
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not fetch users from DB", err)
+	users, dbErr := u.DB.GetUsers()
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not get users")
 		return
 	}
 
@@ -45,8 +45,8 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 	userToCreate.TimesDriver = 0
 	userToCreate.TimesPassenger = 0
 
-	if err := u.DB.CreateUser(userToCreate); err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not create user", err)
+	if dbErr := u.DB.CreateUser(userToCreate); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not create user")
 		return
 	}
 
