@@ -28,8 +28,8 @@ func (uh *UsersDBHandler) GetUsers() ([]model.User, error) {
 
 func (uh *UsersDBHandler) CreateUser(user model.User) error {
 	insertQuery := `
-		INSERT INTO USERS (id, name, email, phone_number, photo_id, times_passenger, times_driver) 
-		VALUES(?, ?, ?, ?, ?, ?, ?)	`
+		INSERT INTO USERS (id, name, password, email, phone_number, photo_id, times_passenger, times_driver) 
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	`
 	stmt, err := uh.conn.Prepare(insertQuery)
 	if err != nil {
 		return err
@@ -39,6 +39,6 @@ func (uh *UsersDBHandler) CreateUser(user model.User) error {
 	if len(*photoID) == 0 {
 		photoID = nil
 	}
-	_, err = stmt.Exec(user.ID, user.Name, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
+	_, err = stmt.Exec(user.ID, user.Name, user.Password, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
 	return err
 }
