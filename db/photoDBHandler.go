@@ -1,11 +1,14 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+	. "github.com/MonikaPalova/tarikatomobil.bg/model"
+)
 
 type PhotoDBHandler struct {
-	Conn *sql.Conn
+	conn *sql.DB
 }
 
-func (p PhotoDBHandler) UploadPhoto() {
+func (pdb PhotoDBHandler) UploadPhoto(p *Photo) {
 
 }

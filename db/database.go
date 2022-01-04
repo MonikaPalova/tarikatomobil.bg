@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/MonikaPalova/tarikatomobil.bg/model"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 )
@@ -13,60 +12,34 @@ const (
 )
 
 type Database struct {
-	conn *sql.DB
+	conn            *sql.DB
+	UsersDBHandler  *UsersDBHandler
+	PhotosDBHandler *PhotoDBHandler
 }
 
-func (d *Database) Connect(user, password, dbName string) error {
-	var err error
-
+func InitDB(user, password, dbName string) (*Database, error) {
+	// Connect to DB
 	connString := fmt.Sprintf("%s:%s@/%s?multiStatements=true", user, password, dbName)
-	d.conn, err = sql.Open("mysql", connString)
-	if err != nil {
-		return err
-	}
-
-	return d.createTables()
-}
-
-func (d Database) createTables() error {
-	createTableQuery, err := ioutil.ReadFile(createTablesFile)
-	if err != nil {
-		return err
-	}
-	_, err = d.conn.Exec(string(createTableQuery))
-	return err
-}
-
-func (d Database) GetUsers() ([]model.User, error) {
-	rows, err := d.conn.Query("SELECT * FROM USERS")
+	conn, err := sql.Open("mysql", connString)
 	if err != nil {
 		return nil, err
 	}
-	users := []model.User{}
 
-	for rows.Next() {
-		var user model.User
-		if err := rows.Scan(&user.ID, &user.Name); err != nil {
-			return nil, err
-		}
-		users = append(users, user)
+	// Create tables if needed
+	var createTableQuery []byte
+	if createTableQuery, err = ioutil.ReadFile(createTablesFile); err != nil {
+		return nil, err
 	}
-	return users, nil
-}
-
-func (d Database) CreateUser(user model.User) error {
-	insertQuery := `
-		INSERT INTO USERS (id, name, email, phone_number, photo_id, times_passenger, times_driver) 
-		VALUES(?, ?, ?, ?, ?, ?, ?)	`
-	stmt, err := d.conn.Prepare(insertQuery)
-	if err != nil {
-		return err
+	if _, err = conn.Exec(string(createTableQuery)); err != nil {
+		return nil, err
 	}
 
-	photoID := &user.PhotoID
-	if len(*photoID) == 0 {
-		photoID = nil
+	// Fill and return a Database struct
+	db := Database{
+		conn:            conn,
+		UsersDBHandler:  &UsersDBHandler{conn: conn},
+		PhotosDBHandler: &PhotoDBHandler{conn: conn},
 	}
-	_, err = stmt.Exec(user.ID, user.Name, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
-	return err
+
+	return &db, nil
 }

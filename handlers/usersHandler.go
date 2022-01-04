@@ -11,7 +11,7 @@ import (
 )
 
 type UsersHandler struct {
-	DB Database
+	DB *UsersDBHandler
 }
 
 func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {

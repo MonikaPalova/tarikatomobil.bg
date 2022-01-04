@@ -10,16 +10,17 @@ import (
 )
 
 func main() {
-	db := Database{}
-	if err := db.Connect("root", "", "tarikatomobil"); err != nil {
+	var db *Database
+	var err error
+
+	if db, err = InitDB("root", "", "tarikatomobil"); err != nil {
 		log.Fatalf("Could not connect to DB: %s", err.Error())
 	}
-
 	log.Printf("Successfuly established database connection")
 
 	router := mux.NewRouter()
 
-	usersHandler := UsersHandler{DB: db}
+	usersHandler := UsersHandler{DB: db.UsersDBHandler}
 
 	router.Path("/users").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
 	router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)
