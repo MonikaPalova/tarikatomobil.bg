@@ -1,0 +1,102 @@
+* {
+    font-family: Segoe UI, Helvetica, Arial, sans-serif;
+    color: #000000;
+}
+
+body {
+    background-color: #cdf9c4;
+    margin: 0;
+}
+
+#main-header {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    background-color: #3da459;
+}
+
+h1 {
+    font-size: 2rem;
+    margin: 0 0 0 4%;
+}
+
+h2 {
+    margin: 0 0 0 4%;
+}
+
+#logo-img {
+    width: 10%;
+    margin-left: 2%;
+}
+
+#profile-logo {
+    width: 50px;
+    margin-left: 0;
+}
+
+.left-aligned {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.right-aligned {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+#navigation-list {
+    display: flex;
+    list-style-type: none;
+}
+
+#navigation-list li {
+    padding: 0 0.5rem;
+}
+
+#navigation-list li a {
+    font-weight: 600;
+}
+
+#navigation-list li img {
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover, h1:hover {
+    color: #cdf9c4;
+}
+
+.centered-text {
+    text-align: center;
+}
+
+/* #options-input {
+    background: #f4f4f4;
+    color: #333;
+    font-family: monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+} */
+
+input[type=text] {
+    padding: 6px;
+    font-size: 17px;
+    width: 100%;
+    border: none;
+    margin: 0;
+}
+
+.search-container {
+    width: 50%;
+    align-items: right;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 0 0.5rem;
+}
+
+.logged-in {
+    display: none;
+}
