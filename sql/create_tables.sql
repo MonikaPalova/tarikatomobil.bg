@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
 );
 
 CREATE TABLE IF NOT EXISTS `users` (
-    `id` VARCHAR(36) NOT NULL PRIMARY KEY,
-    `name` VARCHAR(64) NOT NULL UNIQUE,
+    `name` VARCHAR(36) NOT NULL UNIQUE,
     `password` VARCHAR(36) NOT NULL,
     `email` VARCHAR(64) NOT NULL,
     `phone_number` VARCHAR(15) NOT NULL,
@@ -22,17 +21,17 @@ CREATE TABLE IF NOT EXISTS `reviews` (
     `for_user` VARCHAR(36) NOT NULL,
     `rating` INTEGER NOT NULL,
     `comment` VARCHAR(256),
-    FOREIGN KEY (from_user) REFERENCES users(id),
-    FOREIGN KEY (for_user) REFERENCES users(id)
+    FOREIGN KEY (from_user) REFERENCES users(name),
+    FOREIGN KEY (for_user) REFERENCES users(name)
 );
 
 CREATE TABLE IF NOT EXISTS `automobiles` (
-    `regNum` VARCHAR(16) NOT NULL PRIMARY KEY,
-    `photo_id` VARCHAR(36),
+    `reg_num` VARCHAR(16) NOT NULL PRIMARY KEY,
+    `photo_id` VARCHAR(36) NOT NULL,
     `comment` VARCHAR(256),
-    `owner_id` VARCHAR(36) NOT NULL,
+    `owner_name` VARCHAR(36) NOT NULL,
     FOREIGN KEY (photo_id) REFERENCES photos(id),
-    FOREIGN KEY (owner_id) REFERENCES users(id)
+    FOREIGN KEY (owner_name) REFERENCES users(name)
 );
 
 CREATE TABLE IF NOT EXISTS `trips` (
@@ -40,21 +39,19 @@ CREATE TABLE IF NOT EXISTS `trips` (
     `from` VARCHAR(64) NOT NULL,
     `to` VARCHAR(64) NOT NULL,
     `when` DATETIME NOT NULL,
-    `automobile` VARCHAR(16),
+    `driver_name` VARCHAR(36) NOT NULL,
     `price` FLOAT NOT NULL,
     `max_passengers` INTEGER NOT NULL,
     `air_conditioning` BOOLEAN,
     `smoking` BOOLEAN,
     `pets` BOOLEAN,
     `comment` VARCHAR(256),
-    FOREIGN KEY (automobile) REFERENCES automobiles(regNum)
+    FOREIGN KEY (driver_name) REFERENCES users(name)
 );
 
 CREATE TABLE IF NOT EXISTS `trip_participations` (
     `trip_id` VARCHAR(36) NOT NULL,
-    `driver_id` VARCHAR(36) NOT NULL,
-    `passenger_id` VARCHAR(36) NOT NULL,
+    `passenger_name` VARCHAR(36) NOT NULL,
     FOREIGN KEY (trip_id) REFERENCES trips(id),
-    FOREIGN KEY (driver_id) REFERENCES users(id),
-    FOREIGN KEY (passenger_id) REFERENCES users(id)
+    FOREIGN KEY (passenger_name) REFERENCES users(name)
 );

@@ -7,7 +7,7 @@ type Trip struct {
 	From             string    `json:"from"`
 	To               string    `json:"to"`
 	When             time.Time `json:"when"`
-	AutomobileNumber string    `json:"automobileNumber"`
+	DriverName       string    `json:"driverName"`
 	Price            float32   `json:"price"`
 	MaxPassengers    int       `json:"maxPassengers"`
 	AirConditioning  bool      `json:"airConditioning"`

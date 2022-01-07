@@ -31,9 +31,6 @@ func main() {
 	router.Path("/photos/{id}").Methods(http.MethodDelete).HandlerFunc(photosHandler.DeletePhoto)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
-	//router.Path("/styles").Handler(http.FileServer(http.Dir("./ui/styles")))
-	//router.Path("/scripts").Handler(http.FileServer(http.Dir("./ui/scripts")))
-	//router.Path("/images").Handler(http.FileServer(http.Dir("./ui/images")))
 
 	if err := http.ListenAndServe(":80", router); err != nil {
 		log.Fatalf("Could not start server: %s", err.Error())
