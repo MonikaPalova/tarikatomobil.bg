@@ -2,7 +2,8 @@ package db
 
 import (
 	"database/sql"
-	"github.com/MonikaPalova/tarikatomobil.bg/model"
+	"errors"
+	. "github.com/MonikaPalova/tarikatomobil.bg/model"
 	"github.com/go-sql-driver/mysql"
 )
 
@@ -10,27 +11,24 @@ type UsersDBHandler struct {
 	conn *sql.DB
 }
 
-func (uh *UsersDBHandler) GetUsers() ([]model.User, *DBError) {
-	rows, err := uh.conn.Query("SELECT * FROM USERS")
-	if err != nil {
-		return nil, NewDBError(err, ErrInternal)
-	}
-	users := []model.User{}
-
-	for rows.Next() {
-		var user model.User
-		if err := rows.Scan(&user.ID, &user.Name); err != nil {
-			return nil, NewDBError(err, ErrInternal)
+func (uh *UsersDBHandler) GetUserByName(username string) (UserWithoutPass, *DBError) {
+	row := uh.conn.QueryRow(`
+		SELECT name, email, phone_number, photo_id, times_passenger, times_driver
+		FROM USERS WHERE name = ?`, username)
+	var u UserWithoutPass
+	if err := row.Scan(&u.Name, &u.Email, &u.PhoneNumber, &u.PhotoID, &u.TimesPassenger, &u.TimesDriver); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return u, NewDBError(err, ErrNotFound)
 		}
-		users = append(users, user)
+		return u, NewDBError(err, ErrInternal)
 	}
-	return users, nil
+	return u, nil
 }
 
-func (uh *UsersDBHandler) CreateUser(user model.User) *DBError {
+func (uh *UsersDBHandler) CreateUser(user User) *DBError {
 	insertQuery := `
-		INSERT INTO USERS (id, name, password, email, phone_number, photo_id, times_passenger, times_driver) 
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	`
+		INSERT INTO USERS (name, password, email, phone_number, photo_id, times_passenger, times_driver) 
+		VALUES(?, ?, ?, ?, ?, ?, ?)	`
 	stmt, err := uh.conn.Prepare(insertQuery)
 	if err != nil {
 		return NewDBError(err, ErrInternal)
@@ -40,7 +38,7 @@ func (uh *UsersDBHandler) CreateUser(user model.User) *DBError {
 	if len(*photoID) == 0 {
 		photoID = nil
 	}
-	_, err = stmt.Exec(user.ID, user.Name, user.Password, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
+	_, err = stmt.Exec(user.Name, user.Password, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
 	if driverErr, ok := err.(*mysql.MySQLError); ok {
 		if driverErr.Number == mysqlDuplicateEntryCode {
 			return NewDBError(err, ErrConflict)

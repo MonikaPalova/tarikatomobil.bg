@@ -23,7 +23,7 @@ func main() {
 	usersHandler := UsersHandler{DB: db.UsersDBHandler}
 	photosHandler := PhotoHandler{DB: db.PhotosDBHandler}
 
-	router.Path("/users").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
+	router.Path("/users/{name}").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
 	router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)
 
 	router.Path("/photos").Methods(http.MethodPost).HandlerFunc(photosHandler.UploadPhoto)

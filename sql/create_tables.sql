@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS `photos` (
     `id` VARCHAR(36) NOT NULL PRIMARY KEY,
-    `bytes` MEDIUMBLOB NOT NULL,
-    `extension` VARCHAR(4) NOT NULL
+    `bytes` MEDIUMBLOB NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `users` (

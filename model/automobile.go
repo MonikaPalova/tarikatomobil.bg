@@ -3,6 +3,6 @@ package model
 type Automobile struct {
 	RegNumber string `json:"regNumber"`
 	PhotoID   string `json:"photoId"`
-	OwnerID   string `json:"ownedId"`
+	OwnerName string `json:"ownerName"`
 	Comment   string `json:"comment"`
 }

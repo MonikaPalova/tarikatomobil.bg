@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	. "github.com/MonikaPalova/tarikatomobil.bg/db"
 	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
-	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -15,13 +16,19 @@ type UsersHandler struct {
 }
 
 func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
-	users, dbErr := u.DB.GetUsers()
-	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, "Could not get users")
+	username, ok := mux.Vars(r)["name"]
+	if !ok { // Should not happen
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
 		return
 	}
 
-	bytes, err := json.Marshal(users)
+	user, dbErr := u.DB.GetUserByName(username)
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get user with name %s", username))
+		return
+	}
+
+	bytes, err := json.Marshal(user)
 	if err != nil {
 		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal users: %s", err)
 		return
@@ -36,12 +43,11 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := uuid.NewUUID()
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not generate a user ID", err)
+	if err := userToCreate.ValidateUserData(); err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not create user with these fields", err)
 		return
 	}
-	userToCreate.ID = id.String()
+
 	userToCreate.TimesDriver = 0
 	userToCreate.TimesPassenger = 0
 
@@ -55,5 +61,5 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Successfully created a user with ID %s", userToCreate.ID)
+	log.Printf("Successfully created a user with name %s", userToCreate.Name)
 }

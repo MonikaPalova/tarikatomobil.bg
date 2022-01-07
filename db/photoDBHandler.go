@@ -11,13 +11,13 @@ type PhotoDBHandler struct {
 }
 
 func (pdb PhotoDBHandler) UploadPhoto(p *Photo) *DBError {
-	insertQuery := `INSERT INTO PHOTOS (id, bytes, extension) VALUES (?, ?, ?)`
+	insertQuery := `INSERT INTO PHOTOS (id, bytes) VALUES (?, ?)`
 	stmt, err := pdb.conn.Prepare(insertQuery)
 	if err != nil {
 		return NewDBError(err, ErrInternal)
 	}
 
-	_, err = stmt.Exec(p.ID, p.Base64Content, p.Extension)
+	_, err = stmt.Exec(p.ID, p.Base64Content)
 	if err != nil {
 		return NewDBError(err, ErrInternal)
 	}
@@ -25,9 +25,9 @@ func (pdb PhotoDBHandler) UploadPhoto(p *Photo) *DBError {
 }
 
 func (pdb PhotoDBHandler) GetPhotoByID(photoID string) (*Photo, *DBError) {
-	row := pdb.conn.QueryRow("SELECT * FROM PHOTOS WHERE id = ?", photoID)
+	row := pdb.conn.QueryRow("SELECT id, bytes FROM PHOTOS WHERE id = ?", photoID)
 	var p Photo
-	if err := row.Scan(&p.ID, &p.Base64Content, &p.Extension); err != nil {
+	if err := row.Scan(&p.ID, &p.Base64Content); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, NewDBError(err, ErrNotFound)
 		}
