@@ -54,3 +54,10 @@ CREATE TABLE IF NOT EXISTS `trip_participations` (
     FOREIGN KEY (trip_id) REFERENCES trips(id),
     FOREIGN KEY (passenger_name) REFERENCES users(name)
 );
+
+CREATE TABLE IF NOT EXISTS `sessions` (
+    `id` VARCHAR(128) NOT NULL PRIMARY KEY,
+    `owner` VARCHAR(36) NOT NULL,
+    `expiration` DATETIME NOT NULL,
+    FOREIGN KEY (owner) REFERENCES users(name)
+);

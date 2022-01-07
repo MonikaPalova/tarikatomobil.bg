@@ -67,3 +67,15 @@ func (uh *UsersDBHandler) UpdateUser(username string, userPatch UserPatch) *DBEr
 	}
 	return nil
 }
+
+func (uh *UsersDBHandler) ValidateUserCredentials(username string, password string) *DBError {
+	row := uh.conn.QueryRow("SELECT COUNT(*) FROM users WHERE name = ? AND password = ?", username, password)
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	if count == 0 {
+		return NewDBError(nil, ErrNotFound, "user with these credentials does not exist")
+	}
+	return nil
+}

@@ -14,14 +14,15 @@ const (
 )
 
 type Database struct {
-	conn            *sql.DB
-	UsersDBHandler  *UsersDBHandler
-	PhotosDBHandler *PhotoDBHandler
+	conn             *sql.DB
+	UsersDBHandler   *UsersDBHandler
+	PhotosDBHandler  *PhotoDBHandler
+	SessionDBHandler *SessionDBHandler
 }
 
 func InitDB(user, password, dbName string) (*Database, error) {
 	// Connect to DB
-	connString := fmt.Sprintf("%s:%s@/%s?multiStatements=true", user, password, dbName)
+	connString := fmt.Sprintf("%s:%s@/%s?multiStatements=true&parseTime=true", user, password, dbName)
 	conn, err := sql.Open("mysql", connString)
 	if err != nil {
 		return nil, err
@@ -48,9 +49,10 @@ func InitDB(user, password, dbName string) (*Database, error) {
 
 	// Fill and return a Database struct
 	db := Database{
-		conn:            conn,
-		UsersDBHandler:  &UsersDBHandler{conn: conn},
-		PhotosDBHandler: &PhotoDBHandler{conn: conn},
+		conn:             conn,
+		UsersDBHandler:   &UsersDBHandler{conn: conn},
+		PhotosDBHandler:  &PhotoDBHandler{conn: conn},
+		SessionDBHandler: &SessionDBHandler{conn: conn},
 	}
 
 	dbErr := db.PhotosDBHandler.UploadPhoto(&defaultPhoto)
