@@ -17,21 +17,15 @@ type PhotoHandler struct {
 
 // GETs a photo by ID
 func (ph *PhotoHandler) GetPhoto(w http.ResponseWriter, r *http.Request) {
-	photoID, ok := mux.Vars(r)["id"]
-	if !ok { // Should not happen
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
-		return
-	}
-
-	photo, dbErr := ph.DB.GetPhotoByID(photoID)
+	photo, dbErr := ph.DB.GetPhotoByID(mux.Vars(r)["id"])
 	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr)
+		httputils.RespondWithDBError(w, dbErr, "Could not get photo")
 		return
 	}
 
 	bytes, err := json.Marshal(photo)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal photo to JSON", err)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal photo to JSON", err, true)
 		return
 	}
 	_, _ = w.Write(bytes)
@@ -41,24 +35,24 @@ func (ph *PhotoHandler) GetPhoto(w http.ResponseWriter, r *http.Request) {
 func (ph *PhotoHandler) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 	var photoToUpload model.Photo
 	if err := json.NewDecoder(r.Body).Decode(&photoToUpload); err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err)
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err, false)
 		return
 	}
 
 	photoID, err := uuid.NewUUID()
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not generate a user ID", err)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not generate a user ID", err, true)
 		return
 	}
 	photoToUpload.ID = photoID.String()
 
 	if dbErr := ph.DB.UploadPhoto(&photoToUpload); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr)
+		httputils.RespondWithDBError(w, dbErr, "Could not upload photo")
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(&photoToUpload); err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal the created photo", err)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal the created photo", err, true)
 		return
 	}
 
@@ -67,12 +61,8 @@ func (ph *PhotoHandler) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 
 // Deletes a photo by ID.
 func (ph *PhotoHandler) DeletePhoto(w http.ResponseWriter, r *http.Request) {
-	photoID, ok := mux.Vars(r)["id"]
-	if !ok { // Should not happen
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
-	}
-	if err := ph.DB.DeletePhoto(photoID); err != nil {
-		httputils.RespondWithDBError(w, err)
+	if err := ph.DB.DeletePhoto(mux.Vars(r)["id"]); err != nil {
+		httputils.RespondWithDBError(w, err, "Could not delete the photo")
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

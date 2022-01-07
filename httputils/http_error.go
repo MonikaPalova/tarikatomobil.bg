@@ -7,20 +7,26 @@ import (
 	"net/http"
 )
 
-func RespondWithError(w http.ResponseWriter, statusCode int, errorMsg string, err error) {
-	finalErrorMsg := errorMsg
+func RespondWithError(w http.ResponseWriter, statusCode int, userResponse string, err error, hideErrorCause bool) {
+	finalErrorMsg := userResponse
 	if err != nil {
 		finalErrorMsg = fmt.Sprintf("%s :%s", finalErrorMsg, err.Error())
 	}
 
 	w.WriteHeader(statusCode)
-	log.Println(finalErrorMsg)
-	if statusCode != http.StatusInternalServerError {
-		_, _ = w.Write([]byte(finalErrorMsg)) // Only write the error if it's not 500
+	log.Println(finalErrorMsg) // always log the full error
+	if statusCode == http.StatusInternalServerError {
+		// Then do not even respond with the userResponse
+		_, _ = w.Write([]byte("Internal server error"))
+	}
+	if !hideErrorCause {
+		_, _ = w.Write([]byte(finalErrorMsg)) // If the error cause is not to be hidden, respond with the full error
+	} else {
+		_, _ = w.Write([]byte(userResponse)) // If the error cause is to be hidden, only send the userResponse back
 	}
 }
 
-func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError) {
+func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError, errorMsg string) {
 	var statusCode int
 	switch dbError.ErrorType {
 	case db.ErrNotFound:
@@ -31,10 +37,10 @@ func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError) {
 		statusCode = http.StatusConflict
 	}
 
-	errorMsg := dbError.UserMessage
-	if errorMsg == "" {
-		errorMsg = dbError.Err.Error()
+	userResponse := errorMsg
+	if dbError.UserMessage != "" { // Add the user-friendly DB error if it is non-empty
+		userResponse = fmt.Sprintf("%s: %s", userResponse, dbError.UserMessage)
 	}
 
-	RespondWithError(w, statusCode, errorMsg, dbError.Err)
+	RespondWithError(w, statusCode, userResponse, dbError.Err, true /* always hide the underlying DB error*/)
 }

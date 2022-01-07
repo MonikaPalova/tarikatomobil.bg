@@ -24,8 +24,9 @@ type DBError struct {
 
 func NewDBError(err error, errorType DBErrorType, userMessage ...string) *DBError {
 	dbErr := DBError{
-		Err:       err,
-		ErrorType: errorType,
+		Err:         err,
+		ErrorType:   errorType,
+		UserMessage: "",
 	}
 	if len(userMessage) > 0 {
 		dbErr.UserMessage = userMessage[0]
@@ -42,8 +43,6 @@ func isForeignKeyError(err error) bool {
 }
 
 func checkForSpecificError(err error, errorCode uint16) bool {
-	if driverErr, ok := err.(*mysql.MySQLError); ok && driverErr.Number == errorCode {
-		return true
-	}
-	return false
+	driverErr, ok := err.(*mysql.MySQLError)
+	return ok && driverErr.Number == errorCode
 }

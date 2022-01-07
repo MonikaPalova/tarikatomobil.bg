@@ -17,21 +17,15 @@ type UsersHandler struct {
 }
 
 func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
-	username, ok := mux.Vars(r)["name"]
-	if !ok { // Should not happen
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
-		return
-	}
-
-	user, dbErr := u.DB.GetUserByName(username)
+	user, dbErr := u.DB.GetUserByName(mux.Vars(r)["name"])
 	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr)
+		httputils.RespondWithDBError(w, dbErr, "Could not get user")
 		return
 	}
 
 	bytes, err := json.Marshal(user)
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal users: %s", err)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal users: %s", err, true)
 		return
 	}
 	_, _ = w.Write(bytes)
@@ -40,12 +34,12 @@ func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
 func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 	var userToCreate model.User
 	if err := json.NewDecoder(r.Body).Decode(&userToCreate); err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err)
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err, false)
 		return
 	}
 
 	if err := userToCreate.ValidateUserData(); err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Could not create user with these fields", err)
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not create user with these fields", err, false)
 		return
 	}
 
@@ -56,12 +50,12 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 	userToCreate.TimesPassenger = 0
 
 	if dbErr := u.DB.CreateUser(userToCreate); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr)
+		httputils.RespondWithDBError(w, dbErr, "Could not create user")
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(&userToCreate); err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal created user", err)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal created user", err, true)
 		return
 	}
 
@@ -69,33 +63,28 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u UsersHandler) Patch(w http.ResponseWriter, r *http.Request) {
-	username, ok := mux.Vars(r)["name"]
-	if !ok { // Should not happen
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
-		return
-	}
+	username := mux.Vars(r)["name"]
 
 	var userPatch model.UserPatch
 	if err := json.NewDecoder(r.Body).Decode(&userPatch); err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err)
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err, false)
 		return
 	}
 
 	if err := userPatch.ValidateNonEmptyUserData(); err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Could not update the user with these fields", err)
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not update the user with these fields", err, false)
 		return
 	}
 
 	// Get user so that we can see if his photo id was updated
 	userBeforeUpdate, dbErr := u.DB.GetUserByName(username)
 	if dbErr != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError,
-			fmt.Sprintf("Could not get user %s", username), dbErr.Err)
+		httputils.RespondWithDBError(w, dbErr, "The user to update does not exist")
 		return
 	}
 
 	if dbErr = u.DB.UpdateUser(username, userPatch); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr)
+		httputils.RespondWithDBError(w, dbErr, "Could not update the user")
 		return
 	}
 
