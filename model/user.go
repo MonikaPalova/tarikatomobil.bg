@@ -32,38 +32,63 @@ type UserWithoutPass struct {
 	TimesDriver    int    `json:"timesDriver"`
 }
 
-func (u *User) ValidateUserData() error {
-	if err := u.ValidateUsername(); err != nil {
-		return err
-	}
-	if err := u.ValidatePassword(); err != nil {
-		return err
-	}
-	if err := u.ValidateEmail(); err != nil {
-		return err
-	}
-	return u.ValidatePhoneNumber()
+// Used when updating the user's data (only these 4 fields can be updated)
+type UserPatch struct {
+	Password    string `json:"password"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+	PhotoID     string `json:"photoId"`
 }
 
-func (u *User) ValidateUsername() error {
-	ok, _ := regexp.MatchString(usernameRegex, u.Name)
+func (u *User) ValidateUserData() error {
+	if err := validateUsername(u.Name); err != nil {
+		return err
+	}
+	if err := validatePassword(u.Password); err != nil {
+		return err
+	}
+	if err := validateEmail(u.Email); err != nil {
+		return err
+	}
+	return validatePhoneNumber(u.PhoneNumber)
+}
+
+func (u *UserPatch) ValidateNonEmptyUserData() error {
+	if u.Password != "" {
+		if err := validatePassword(u.Password); err != nil {
+			return err
+		}
+	}
+	if u.Email != "" {
+		if err := validateEmail(u.Email); err != nil {
+			return err
+		}
+	}
+	if u.PhoneNumber != "" {
+		return validatePhoneNumber(u.PhoneNumber)
+	}
+	return nil
+}
+
+func validateUsername(username string) error {
+	ok, _ := regexp.MatchString(usernameRegex, username)
 	if !ok {
 		return errors.New("username must begin with a letter and have only alphanumeric characters")
 	}
 	return nil
 }
 
-func (u *User) ValidatePassword() error {
+func validatePassword(password string) error {
 	var (
 		hasMinLen = false
 		hasUpper  = false
 		hasLower  = false
 		hasNumber = false
 	)
-	if len(u.Password) >= 7 {
+	if len(password) >= 7 {
 		hasMinLen = true
 	}
-	for _, char := range u.Password {
+	for _, char := range password {
 		switch {
 		case unicode.IsUpper(char):
 			hasUpper = true
@@ -80,17 +105,17 @@ func (u *User) ValidatePassword() error {
 	return nil
 }
 
-func (u *User) ValidateEmail() error {
-	_, err := mail.ParseAddress(u.Email)
+func validateEmail(email string) error {
+	_, err := mail.ParseAddress(email)
 	if err != nil {
 		return fmt.Errorf("the provided email is not valid: %s", err.Error())
 	}
 	return err
 }
 
-func (u *User) ValidatePhoneNumber() error {
+func validatePhoneNumber(phoneNumber string) error {
 	// For now just make sure it has at least 7 characters
-	if len(u.PhoneNumber) < 7 {
+	if len(phoneNumber) < 7 {
 		return errors.New("the phone number is not valid")
 	}
 	return nil

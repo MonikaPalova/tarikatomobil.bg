@@ -66,3 +66,29 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Successfully created a user with name %s", userToCreate.Name)
 }
+
+func (u UsersHandler) Patch(w http.ResponseWriter, r *http.Request) {
+	username, ok := mux.Vars(r)["name"]
+	if !ok { // Should not happen
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
+		return
+	}
+
+	var userPatch model.UserPatch
+	if err := json.NewDecoder(r.Body).Decode(&userPatch); err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not parse request body as JSON", err)
+		return
+	}
+
+	if err := userPatch.ValidateNonEmptyUserData(); err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, "Could not update the user with these fields", err)
+		return
+	}
+
+	if dbErr := u.DB.UpdateUser(username, userPatch); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not update the user with these fields")
+		return
+	}
+
+	_, _ = w.Write([]byte("Successfully updated user"))
+}

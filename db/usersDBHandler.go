@@ -33,13 +33,33 @@ func (uh *UsersDBHandler) CreateUser(user User) *DBError {
 		return NewDBError(err, ErrInternal)
 	}
 
-	photoID := &user.PhotoID
-	if len(*photoID) == 0 {
-		photoID = nil
-	}
-	_, err = stmt.Exec(user.Name, user.Password, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
+	_, err = stmt.Exec(user.Name, user.Password, user.Email, user.PhoneNumber, user.PhotoID, user.TimesPassenger, user.TimesDriver)
 	if err != nil {
 		if isDuplicateEntryError(err) {
+			return NewDBError(err, ErrConflict)
+		}
+		return NewDBError(err, ErrInternal)
+	}
+	return nil
+}
+
+func (uh *UsersDBHandler) UpdateUser(username string, userPatch UserPatch) *DBError {
+	updateQuery := `UPDATE users SET users.password = IF(?='', users.password, ?), 
+ 								  users.photo_id = IF(?='', users.photo_id, ?),
+                  				  users.email = IF(?='', users.email, ?),
+                  				  users.phone_number = IF(?='', users.phone_number, ?) WHERE users.name = ?`
+	stmt, err := uh.conn.Prepare(updateQuery)
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	_, err = stmt.Exec(
+		userPatch.Password, userPatch.Password,
+		userPatch.PhotoID, userPatch.PhotoID,
+		userPatch.Email, userPatch.Email,
+		userPatch.PhoneNumber, userPatch.PhoneNumber,
+		username)
+	if err != nil {
+		if isForeignKeyError(err) { // If the photo with given ID does not exist
 			return NewDBError(err, ErrConflict)
 		}
 		return NewDBError(err, ErrInternal)
