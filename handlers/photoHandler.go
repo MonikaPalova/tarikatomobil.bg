@@ -58,12 +58,3 @@ func (ph *PhotoHandler) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Successfully created a photo with ID %s", photoID)
 }
-
-// Deletes a photo by ID.
-func (ph *PhotoHandler) DeletePhoto(w http.ResponseWriter, r *http.Request) {
-	if err := ph.DB.DeletePhoto(mux.Vars(r)["id"]); err != nil {
-		httputils.RespondWithDBError(w, err, "Could not delete the photo")
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
-}

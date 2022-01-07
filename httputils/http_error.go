@@ -18,11 +18,12 @@ func RespondWithError(w http.ResponseWriter, statusCode int, userResponse string
 	if statusCode == http.StatusInternalServerError {
 		// Then do not even respond with the userResponse
 		_, _ = w.Write([]byte("Internal server error"))
-	}
-	if !hideErrorCause {
-		_, _ = w.Write([]byte(finalErrorMsg)) // If the error cause is not to be hidden, respond with the full error
 	} else {
-		_, _ = w.Write([]byte(userResponse)) // If the error cause is to be hidden, only send the userResponse back
+		if !hideErrorCause {
+			_, _ = w.Write([]byte(finalErrorMsg)) // If the error cause is not to be hidden, respond with the full error
+		} else {
+			_, _ = w.Write([]byte(userResponse)) // If the error cause is to be hidden, only send the userResponse back
+		}
 	}
 }
 

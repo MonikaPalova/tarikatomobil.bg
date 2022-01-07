@@ -40,7 +40,6 @@ func main() {
 
 	authRouter.Path("/photos").Methods(http.MethodPost).HandlerFunc(photosHandler.UploadPhoto)
 	router.Path("/photos/{id}").Methods(http.MethodGet).HandlerFunc(photosHandler.GetPhoto)
-	authRouter.Path("/photos/{id}").Methods(http.MethodDelete).HandlerFunc(photosHandler.DeletePhoto)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
 

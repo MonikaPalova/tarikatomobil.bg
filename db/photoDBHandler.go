@@ -39,14 +39,3 @@ func (pdb PhotoDBHandler) GetPhotoByID(photoID string) (*Photo, *DBError) {
 	}
 	return &p, nil
 }
-
-func (pdb PhotoDBHandler) DeletePhoto(photoID string) *DBError {
-	stmt, err := pdb.conn.Prepare("DELETE FROM photos WHERE id = ?")
-	if err != nil {
-		return NewDBError(err, ErrInternal)
-	}
-	if _, err = stmt.Exec(photoID); err != nil {
-		return NewDBError(err, ErrInternal)
-	}
-	return nil
-}

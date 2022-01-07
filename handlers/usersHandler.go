@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MonikaPalova/tarikatomobil.bg/auth"
 	. "github.com/MonikaPalova/tarikatomobil.bg/db"
 	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
@@ -64,6 +65,11 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 
 func (u UsersHandler) Patch(w http.ResponseWriter, r *http.Request) {
 	username := mux.Vars(r)["name"]
+	sessionUsername := auth.GetUserFromRequest(r)
+	if username != sessionUsername {
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Modifying other users is forbidden", nil, false)
+		return
+	}
 
 	var userPatch model.UserPatch
 	if err := json.NewDecoder(r.Body).Decode(&userPatch); err != nil {
@@ -76,32 +82,9 @@ func (u UsersHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get user so that we can see if his photo id was updated
-	userBeforeUpdate, dbErr := u.DB.GetUserByName(username)
-	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, "The user to update does not exist")
-		return
-	}
-
-	if dbErr = u.DB.UpdateUser(username, userPatch); dbErr != nil {
+	if dbErr := u.DB.UpdateUser(username, userPatch); dbErr != nil {
 		httputils.RespondWithDBError(w, dbErr, "Could not update the user")
 		return
 	}
-
-	if userPatch.PhotoID != "" && // a photo ID was provided
-		userBeforeUpdate.PhotoID != userPatch.PhotoID && // the photo ID is different than the previous photo ID
-		userBeforeUpdate.PhotoID != model.DefaultPhotoID { // the old photo is not the default photo
-		// Then delete the previous photo
-		dbErr = u.PhotosDB.DeletePhoto(userBeforeUpdate.PhotoID)
-		if dbErr != nil {
-			// Just log the error, the patch was successful
-			log.Printf("User %s's photo was updated from %s to %s. Could not delete the old photo: %s",
-				username, userBeforeUpdate.PhotoID, userPatch.PhotoID, dbErr.Err.Error())
-		} else {
-			log.Printf("User %s's photo was updated from %s to %s. Successfully deleted photo %s",
-				username, userBeforeUpdate.PhotoID, userPatch.PhotoID, userBeforeUpdate.PhotoID)
-		}
-	}
-
 	_, _ = w.Write([]byte(fmt.Sprintf("Successfully updated user %s", username)))
 }
