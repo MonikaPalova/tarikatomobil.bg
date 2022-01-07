@@ -39,7 +39,10 @@ func (u *User) ValidateUserData() error {
 	if err := u.ValidatePassword(); err != nil {
 		return err
 	}
-	return u.ValidateEmail()
+	if err := u.ValidateEmail(); err != nil {
+		return err
+	}
+	return u.ValidatePhoneNumber()
 }
 
 func (u *User) ValidateUsername() error {
@@ -83,4 +86,12 @@ func (u *User) ValidateEmail() error {
 		return fmt.Errorf("the provided email is not valid: %s", err.Error())
 	}
 	return err
+}
+
+func (u *User) ValidatePhoneNumber() error {
+	// For now just make sure it has at least 7 characters
+	if len(u.PhoneNumber) < 7 {
+		return errors.New("the phone number is not valid")
+	}
+	return nil
 }
