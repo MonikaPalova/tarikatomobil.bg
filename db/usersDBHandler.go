@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	. "github.com/MonikaPalova/tarikatomobil.bg/model"
-	"github.com/go-sql-driver/mysql"
 )
 
 type UsersDBHandler struct {
@@ -39,8 +38,8 @@ func (uh *UsersDBHandler) CreateUser(user User) *DBError {
 		photoID = nil
 	}
 	_, err = stmt.Exec(user.Name, user.Password, user.Email, user.PhoneNumber, photoID, user.TimesPassenger, user.TimesDriver)
-	if driverErr, ok := err.(*mysql.MySQLError); ok {
-		if driverErr.Number == mysqlDuplicateEntryCode {
+	if err != nil {
+		if isDuplicateEntryError(err) {
 			return NewDBError(err, ErrConflict)
 		}
 		return NewDBError(err, ErrInternal)

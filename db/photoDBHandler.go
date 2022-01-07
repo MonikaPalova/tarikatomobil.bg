@@ -19,6 +19,9 @@ func (pdb PhotoDBHandler) UploadPhoto(p *Photo) *DBError {
 
 	_, err = stmt.Exec(p.ID, p.Base64Content)
 	if err != nil {
+		if isDuplicateEntryError(err) {
+			return NewDBError(err, ErrConflict)
+		}
 		return NewDBError(err, ErrInternal)
 	}
 	return nil

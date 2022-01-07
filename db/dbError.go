@@ -1,5 +1,7 @@
 package db
 
+import "github.com/go-sql-driver/mysql"
+
 const (
 	mysqlDuplicateEntryCode = 1062
 )
@@ -24,4 +26,11 @@ func NewDBError(err error, errorType DBErrorType) *DBError {
 		ErrorType: errorType,
 	}
 	return &dbErr
+}
+
+func isDuplicateEntryError(err error) bool {
+	if driverErr, ok := err.(*mysql.MySQLError); ok && driverErr.Number == mysqlDuplicateEntryCode {
+		return true
+	}
+	return false
 }

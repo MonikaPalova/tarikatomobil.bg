@@ -48,6 +48,9 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if userToCreate.PhotoID == "" {
+		userToCreate.PhotoID = model.DefaultPhotoID
+	}
 	userToCreate.TimesDriver = 0
 	userToCreate.TimesPassenger = 0
 

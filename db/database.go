@@ -3,12 +3,14 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/MonikaPalova/tarikatomobil.bg/model"
 	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 )
 
 const (
 	createTablesFile = "./sql/create_tables.sql"
+	defaultPhotoFile = "./resources/unknown_photo.bin"
 )
 
 type Database struct {
@@ -34,11 +36,26 @@ func InitDB(user, password, dbName string) (*Database, error) {
 		return nil, err
 	}
 
+	// Upload the default photo if it is not uploaded yet
+	defaultPhoto := model.Photo{
+		ID: model.DefaultPhotoID,
+	}
+	var defaultPhotoBytes []byte
+	if defaultPhotoBytes, err = ioutil.ReadFile(defaultPhotoFile); err != nil {
+		return nil, fmt.Errorf("could not load default photo from %s: %s", defaultPhotoFile, err.Error())
+	}
+	defaultPhoto.Base64Content = string(defaultPhotoBytes)
+
 	// Fill and return a Database struct
 	db := Database{
 		conn:            conn,
 		UsersDBHandler:  &UsersDBHandler{conn: conn},
 		PhotosDBHandler: &PhotoDBHandler{conn: conn},
+	}
+
+	dbErr := db.PhotosDBHandler.UploadPhoto(&defaultPhoto)
+	if dbErr != nil && dbErr.ErrorType != ErrConflict {
+		return nil, fmt.Errorf("could not upload the default photo to the database: %s", dbErr.Err.Error())
 	}
 
 	return &db, nil
