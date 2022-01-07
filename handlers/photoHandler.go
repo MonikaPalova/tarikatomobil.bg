@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	. "github.com/MonikaPalova/tarikatomobil.bg/db"
 	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
@@ -26,7 +25,7 @@ func (ph *PhotoHandler) GetPhoto(w http.ResponseWriter, r *http.Request) {
 
 	photo, dbErr := ph.DB.GetPhotoByID(photoID)
 	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get photo with ID %s", photoID))
+		httputils.RespondWithDBError(w, dbErr)
 		return
 	}
 
@@ -54,7 +53,7 @@ func (ph *PhotoHandler) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 	photoToUpload.ID = photoID.String()
 
 	if dbErr := ph.DB.UploadPhoto(&photoToUpload); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not upload a photo"))
+		httputils.RespondWithDBError(w, dbErr)
 		return
 	}
 
@@ -73,7 +72,7 @@ func (ph *PhotoHandler) DeletePhoto(w http.ResponseWriter, r *http.Request) {
 		httputils.RespondWithError(w, http.StatusInternalServerError, "Mux did not forward the request correctly", nil)
 	}
 	if err := ph.DB.DeletePhoto(photoID); err != nil {
-		httputils.RespondWithDBError(w, err, fmt.Sprintf("Could not delete photo with id %s"), photoID)
+		httputils.RespondWithDBError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

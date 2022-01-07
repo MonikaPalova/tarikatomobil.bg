@@ -12,7 +12,8 @@ import (
 )
 
 type UsersHandler struct {
-	DB *UsersDBHandler
+	DB       *UsersDBHandler
+	PhotosDB *PhotoDBHandler
 }
 
 func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +25,7 @@ func (u UsersHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	user, dbErr := u.DB.GetUserByName(username)
 	if dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get user with name %s", username))
+		httputils.RespondWithDBError(w, dbErr)
 		return
 	}
 
@@ -55,7 +56,7 @@ func (u UsersHandler) Post(w http.ResponseWriter, r *http.Request) {
 	userToCreate.TimesPassenger = 0
 
 	if dbErr := u.DB.CreateUser(userToCreate); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, "Could not create user")
+		httputils.RespondWithDBError(w, dbErr)
 		return
 	}
 
@@ -85,10 +86,33 @@ func (u UsersHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dbErr := u.DB.UpdateUser(username, userPatch); dbErr != nil {
-		httputils.RespondWithDBError(w, dbErr, "Could not update the user with these fields")
+	// Get user so that we can see if his photo id was updated
+	userBeforeUpdate, dbErr := u.DB.GetUserByName(username)
+	if dbErr != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError,
+			fmt.Sprintf("Could not get user %s", username), dbErr.Err)
 		return
 	}
 
-	_, _ = w.Write([]byte("Successfully updated user"))
+	if dbErr = u.DB.UpdateUser(username, userPatch); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr)
+		return
+	}
+
+	if userPatch.PhotoID != "" && // a photo ID was provided
+		userBeforeUpdate.PhotoID != userPatch.PhotoID && // the photo ID is different than the previous photo ID
+		userBeforeUpdate.PhotoID != model.DefaultPhotoID { // the old photo is not the default photo
+		// Then delete the previous photo
+		dbErr = u.PhotosDB.DeletePhoto(userBeforeUpdate.PhotoID)
+		if dbErr != nil {
+			// Just log the error, the patch was successful
+			log.Printf("User %s's photo was updated from %s to %s. Could not delete the old photo: %s",
+				username, userBeforeUpdate.PhotoID, userPatch.PhotoID, dbErr.Err.Error())
+		} else {
+			log.Printf("User %s's photo was updated from %s to %s. Successfully deleted photo %s",
+				username, userBeforeUpdate.PhotoID, userPatch.PhotoID, userBeforeUpdate.PhotoID)
+		}
+	}
+
+	_, _ = w.Write([]byte(fmt.Sprintf("Successfully updated user %s", username)))
 }

@@ -17,14 +17,18 @@ const (
 )
 
 type DBError struct {
-	Err       error
-	ErrorType DBErrorType
+	Err         error
+	UserMessage string // The DB error exposes DB internals (it's logged) - this message shall be used as an API response
+	ErrorType   DBErrorType
 }
 
-func NewDBError(err error, errorType DBErrorType) *DBError {
+func NewDBError(err error, errorType DBErrorType, userMessage ...string) *DBError {
 	dbErr := DBError{
 		Err:       err,
 		ErrorType: errorType,
+	}
+	if len(userMessage) > 0 {
+		dbErr.UserMessage = userMessage[0]
 	}
 	return &dbErr
 }

@@ -20,7 +20,7 @@ func main() {
 
 	router := mux.NewRouter()
 
-	usersHandler := UsersHandler{DB: db.UsersDBHandler}
+	usersHandler := UsersHandler{DB: db.UsersDBHandler, PhotosDB: db.PhotosDBHandler}
 	photosHandler := PhotoHandler{DB: db.PhotosDBHandler}
 
 	router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)

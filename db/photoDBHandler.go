@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	. "github.com/MonikaPalova/tarikatomobil.bg/model"
 )
 
@@ -32,7 +33,7 @@ func (pdb PhotoDBHandler) GetPhotoByID(photoID string) (*Photo, *DBError) {
 	var p Photo
 	if err := row.Scan(&p.ID, &p.Base64Content); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, NewDBError(err, ErrNotFound)
+			return nil, NewDBError(err, ErrNotFound, fmt.Sprintf("photo with ID %s does not exist", photoID))
 		}
 		return nil, NewDBError(err, ErrInternal)
 	}

@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	. "github.com/MonikaPalova/tarikatomobil.bg/model"
 )
 
@@ -17,7 +18,7 @@ func (uh *UsersDBHandler) GetUserByName(username string) (UserWithoutPass, *DBEr
 	var u UserWithoutPass
 	if err := row.Scan(&u.Name, &u.Email, &u.PhoneNumber, &u.PhotoID, &u.TimesPassenger, &u.TimesDriver); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return u, NewDBError(err, ErrNotFound)
+			return u, NewDBError(err, ErrNotFound, fmt.Sprintf("user %s does not exist", username))
 		}
 		return u, NewDBError(err, ErrInternal)
 	}
@@ -36,7 +37,7 @@ func (uh *UsersDBHandler) CreateUser(user User) *DBError {
 	_, err = stmt.Exec(user.Name, user.Password, user.Email, user.PhoneNumber, user.PhotoID, user.TimesPassenger, user.TimesDriver)
 	if err != nil {
 		if isDuplicateEntryError(err) {
-			return NewDBError(err, ErrConflict)
+			return NewDBError(err, ErrConflict, fmt.Sprintf("user %s already exists", user.Name))
 		}
 		return NewDBError(err, ErrInternal)
 	}
@@ -60,7 +61,7 @@ func (uh *UsersDBHandler) UpdateUser(username string, userPatch UserPatch) *DBEr
 		username)
 	if err != nil {
 		if isForeignKeyError(err) { // If the photo with given ID does not exist
-			return NewDBError(err, ErrConflict)
+			return NewDBError(err, ErrConflict, fmt.Sprintf("a photo with ID %s does not exist", userPatch.PhotoID))
 		}
 		return NewDBError(err, ErrInternal)
 	}

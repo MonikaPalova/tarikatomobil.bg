@@ -20,7 +20,7 @@ func RespondWithError(w http.ResponseWriter, statusCode int, errorMsg string, er
 	}
 }
 
-func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError, additionalMsg ...string) {
+func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError) {
 	var statusCode int
 	switch dbError.ErrorType {
 	case db.ErrNotFound:
@@ -31,9 +31,9 @@ func RespondWithDBError(w http.ResponseWriter, dbError *db.DBError, additionalMs
 		statusCode = http.StatusConflict
 	}
 
-	errorMsg := ""
-	if len(additionalMsg) > 0 {
-		errorMsg = additionalMsg[0]
+	errorMsg := dbError.UserMessage
+	if errorMsg == "" {
+		errorMsg = dbError.Err.Error()
 	}
 
 	RespondWithError(w, statusCode, errorMsg, dbError.Err)
