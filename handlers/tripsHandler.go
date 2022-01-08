@@ -155,3 +155,24 @@ func (th *TripsHandler) GetSingle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (th *TripsHandler) GetTripsForUser(w http.ResponseWriter, r *http.Request) {
+	caller := auth.GetUserFromRequest(r)
+	if caller == "" {
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Only logged-in users can get their trips", nil, false)
+		return
+	}
+
+	trips, dbErr := th.DB.GetTripsForUser(caller)
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get trips for user %s", caller))
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(trips); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not serialize trips", err, true)
+		return
+	}
+
+	log.Printf("Successfully retrieved trips for user %s", caller)
+}

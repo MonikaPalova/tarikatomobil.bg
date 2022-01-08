@@ -63,6 +63,21 @@ func (tdb *TripsDBHandler) GetTrips(filter model.TripFilter) ([]model.Trip, *DBE
 		return nil, NewDBError(err, ErrInternal)
 	}
 
+	return deserializeTrips(rows)
+}
+
+func (tdb *TripsDBHandler) GetTripsForUser(username string) ([]model.Trip, *DBError) {
+	rows, err := tdb.conn.Query(`SELECT id, location_from, location_to, departure_time, driver_name, price,
+		max_passengers, air_conditioning, smoking, pets, comment FROM trips 
+		    JOIN trip_participations tp on trips.id = tp.trip_id
+		    WHERE tp.passenger_name = ?`, username)
+	if err != nil {
+		return nil, NewDBError(err, ErrInternal)
+	}
+	return deserializeTrips(rows)
+}
+
+func deserializeTrips(rows *sql.Rows) ([]model.Trip, *DBError) {
 	trips := []model.Trip{}
 	for rows.Next() {
 		var trip model.Trip

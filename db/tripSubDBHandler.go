@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
 )
@@ -38,6 +39,9 @@ func (tsdb *TripSubscriptionDBHandler) GetFreeSpotsCount(tripID string) (int, *D
 	row := tsdb.conn.QueryRow("SELECT max_passengers FROM trips WHERE id = ?", tripID)
 	var maxTripPassengers int
 	if err := row.Scan(&maxTripPassengers); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, NewDBError(err, ErrNotFound, fmt.Sprintf("trip with id %s does not exist", tripID))
+		}
 		return 0, NewDBError(err, ErrInternal)
 	}
 
