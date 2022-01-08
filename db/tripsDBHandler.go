@@ -43,8 +43,33 @@ func (tdb *TripsDBHandler) DeleteTrip(tripID, caller string) *DBError {
 	return nil
 }
 
-func (tdb *TripsDBHandler) GetTrips( /* TODO filters */) ([]model.Trip, *DBError) {
-	return nil, nil
+func (tdb *TripsDBHandler) GetTrips(filter model.TripFilter) ([]model.Trip, *DBError) {
+	query := `SELECT id, location_from, location_to, departure_time, driver_name, price,
+		max_passengers, air_conditioning, smoking, pets, comment FROM trips
+		WHERE
+		location_from = ? AND
+		location_to = ? AND 
+		TIMESTAMP(departure_time) > ? AND TIMESTAMP(departure_time) < ? AND
+		price < ? AND
+		air_conditioning = ? AND
+		smoking = ? AND
+		pets = ?`
+	rows, err := tdb.conn.Query(query, filter.From, filter.To, filter.After, filter.Before, filter.MaxPrice,
+		filter.AirConditioning, filter.Smoking, filter.Pets)
+	if err != nil {
+		return nil, NewDBError(err, ErrInternal)
+	}
+
+	trips := []model.Trip{}
+	for rows.Next() {
+		var trip model.Trip
+		if err := rows.Scan(&trip.ID, &trip.From, &trip.To, &trip.When, &trip.DriverName, &trip.Price,
+			&trip.MaxPassengers, &trip.AirConditioning, &trip.Smoking, &trip.Pets, &trip.Comment); err != nil {
+			return nil, NewDBError(err, ErrInternal)
+		}
+		trips = append(trips, trip)
+	}
+	return trips, nil
 }
 
 func (tdb *TripsDBHandler) GetTrip(tripID string) (model.Trip, *DBError) {

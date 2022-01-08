@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/auth"
 	"github.com/MonikaPalova/tarikatomobil.bg/db"
 	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
@@ -10,6 +12,9 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"net/url"
+	"strconv"
+	"time"
 )
 
 type TripsHandler struct {
@@ -77,7 +82,64 @@ func (th *TripsHandler) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TripsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	filter, err := parseTripFilterQuery(r.URL.Query())
+	if err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, "Query string is not properly formatted", err, false)
+		return
+	}
+	trips, dbErr := th.DB.GetTrips(filter)
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not retrieve trips")
+		return
+	}
 
+	if err := json.NewEncoder(w).Encode(trips); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal retrieved trips",
+			err, true)
+		return
+	}
+	log.Println("Trips successfully retrieved")
+}
+
+func parseTripFilterQuery(query url.Values) (model.TripFilter, error) {
+	filter := model.DefaultTripFilter()
+	filter.From = query.Get("from")
+	if filter.From == "" {
+		return filter, errors.New("when filtering, the from query param is mandatory")
+	}
+
+	filter.To = query.Get("to")
+	if filter.To == "" {
+		return filter, errors.New("when filtering, the to query param is mandatory")
+	}
+
+	var err error
+	if before, ok := query["before"]; ok {
+		if filter.Before, err = time.Parse("2022-01-08T11:56:00Z", before[0]); err != nil {
+			return filter, fmt.Errorf("could not parse the before query param: %s", err.Error())
+		}
+	}
+
+	if after, ok := query["after"]; ok {
+		if filter.After, err = time.Parse("2022-01-08T11:56:00Z", after[0]); err != nil {
+			return filter, fmt.Errorf("could not parse the after query param: %s", err.Error())
+		}
+	}
+	if maxPrice, ok := query["maxPrice"]; ok {
+		if filter.MaxPrice, err = strconv.ParseFloat(maxPrice[0], 32); err != nil {
+			return filter, fmt.Errorf("could not parse the maxPrice query param as a float: %s", err.Error())
+		}
+	}
+	if query.Get("airConditioning") == "true" {
+		filter.AirConditioning = true
+	}
+	if query.Get("smoking") == "true" {
+		filter.Smoking = true
+	}
+	if query.Get("pets") == "true" {
+		filter.Pets = true
+	}
+	return filter, nil
 }
 
 func (th *TripsHandler) GetSingle(w http.ResponseWriter, r *http.Request) {

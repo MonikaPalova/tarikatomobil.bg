@@ -11,12 +11,36 @@ type Trip struct {
 	To              string    `json:"to"`
 	When            time.Time `json:"when"`
 	DriverName      string    `json:"driverName"`
-	Price           float32   `json:"price"`
+	Price           float64   `json:"price"`
 	MaxPassengers   int       `json:"maxPassengers"`
 	AirConditioning bool      `json:"airConditioning"`
 	Smoking         bool      `json:"smoking"`
 	Pets            bool      `json:"pets"`
 	Comment         string    `json:"comment"`
+}
+
+type TripFilter struct {
+	From            string    `json:"from"`
+	To              string    `json:"to"`
+	Before          time.Time `json:"before"`
+	After           time.Time `json:"after"`
+	MaxPrice        float64   `json:"maxPrice"`
+	AirConditioning bool      `json:"airConditioning"`
+	Smoking         bool      `json:"smoking"`
+	Pets            bool      `json:"pets"`
+}
+
+func DefaultTripFilter() TripFilter {
+	return TripFilter{
+		From:            "",
+		To:              "",
+		Before:          time.Now().Add(240 * time.Hour), // Default end-date is after 10 days
+		After:           time.Now(),
+		MaxPrice:        100,
+		AirConditioning: false,
+		Smoking:         false,
+		Pets:            false,
+	}
 }
 
 func (t Trip) Validate() error {
