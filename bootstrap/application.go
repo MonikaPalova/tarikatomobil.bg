@@ -47,6 +47,7 @@ func (a *Application) setupHTTPRoutes() {
 	a.setupLoginHandler()
 	a.setupUserHandler()
 	a.setupAutomobileHandler()
+	a.setupReviewsHandler()
 
 	// Serve UI files
 	a.router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
@@ -79,4 +80,11 @@ func (a *Application) setupAutomobileHandler() {
 	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPost).HandlerFunc(automobilesHandler.Post)
 	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPatch).HandlerFunc(automobilesHandler.Patch)
 	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodDelete).HandlerFunc(automobilesHandler.Delete)
+}
+
+func (a *Application) setupReviewsHandler() {
+	reviewsHandler := ReviewsHandler{DB: a.db.ReviewsDBHandler}
+	a.router.Path("/users/{name}/reviews").Methods(http.MethodGet).HandlerFunc(reviewsHandler.Get)
+	a.authRouter.Path("/users/{name}/reviews").Methods(http.MethodPost).HandlerFunc(reviewsHandler.Post)
+	a.authRouter.Path("/users/{name}/reviews").Methods(http.MethodDelete).HandlerFunc(reviewsHandler.Delete)
 }

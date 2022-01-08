@@ -41,7 +41,7 @@ func (ph *PhotoHandler) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 
 	photoID, err := uuid.NewUUID()
 	if err != nil {
-		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not generate a user ID", err, true)
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not generate a photo ID", err, true)
 		return
 	}
 	photoToUpload.ID = photoID.String()
