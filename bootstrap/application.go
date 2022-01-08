@@ -91,7 +91,7 @@ func (a *Application) setupReviewsHandler() {
 }
 
 func (a *Application) setupTripsHandler() {
-	tripsHandler := TripsHandler{DB: a.db.TripsDBHandler}
+	tripsHandler := TripsHandler{DB: a.db.TripsDBHandler, AutomobilesDB: a.db.AutomobileDBHandler}
 	a.authRouter.Path("/trips").Methods(http.MethodPost).HandlerFunc(tripsHandler.Post)
 	a.authRouter.Path("/trips/{id}").Methods(http.MethodDelete).HandlerFunc(tripsHandler.Delete)
 	a.router.Path("/trips").Methods(http.MethodGet).HandlerFunc(tripsHandler.GetAll)

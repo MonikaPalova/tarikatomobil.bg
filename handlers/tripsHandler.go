@@ -13,13 +13,19 @@ import (
 )
 
 type TripsHandler struct {
-	DB *db.TripsDBHandler
+	DB            *db.TripsDBHandler
+	AutomobilesDB *db.AutomobileDBHandler
 }
 
 func (th *TripsHandler) Post(w http.ResponseWriter, r *http.Request) {
 	caller := auth.GetUserFromRequest(r)
 	if caller == "" {
 		httputils.RespondWithError(w, http.StatusUnauthorized, "Only logged-in users can create trips", nil, false)
+		return
+	}
+
+	if _, dbErr := th.AutomobilesDB.GetUserAutomobile(caller); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Users without automobiles cannot create trips")
 		return
 	}
 
