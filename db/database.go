@@ -20,6 +20,7 @@ type Database struct {
 	SessionDBHandler    *SessionDBHandler
 	AutomobileDBHandler *AutomobileDBHandler
 	ReviewsDBHandler    *ReviewsDBHandler
+	TripsDBHandler      *TripsDBHandler
 }
 
 func InitDB(user, password, dbName string) (*Database, error) {
@@ -47,6 +48,7 @@ func InitDB(user, password, dbName string) (*Database, error) {
 		SessionDBHandler:    &SessionDBHandler{conn: conn},
 		AutomobileDBHandler: &AutomobileDBHandler{conn: conn},
 		ReviewsDBHandler:    &ReviewsDBHandler{conn: conn},
+		TripsDBHandler:      &TripsDBHandler{conn: conn},
 	}
 
 	// Upload the default photo if it is not uploaded yet

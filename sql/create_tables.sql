@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `automobiles` (
 
 CREATE TABLE IF NOT EXISTS `trips` (
     `id` VARCHAR(36) NOT NULL PRIMARY KEY,
-    `from` VARCHAR(64) NOT NULL,
-    `to` VARCHAR(64) NOT NULL,
-    `when` DATETIME NOT NULL,
+    `location_from` VARCHAR(64) NOT NULL,
+    `location_to` VARCHAR(64) NOT NULL,
+    `departure_time` DATETIME NOT NULL,
     `driver_name` VARCHAR(36) NOT NULL,
     `price` FLOAT NOT NULL,
     `max_passengers` INTEGER NOT NULL,
