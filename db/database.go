@@ -14,13 +14,14 @@ const (
 )
 
 type Database struct {
-	conn                *sql.DB
-	UsersDBHandler      *UsersDBHandler
-	PhotosDBHandler     *PhotoDBHandler
-	SessionDBHandler    *SessionDBHandler
-	AutomobileDBHandler *AutomobileDBHandler
-	ReviewsDBHandler    *ReviewsDBHandler
-	TripsDBHandler      *TripsDBHandler
+	conn                       *sql.DB
+	UsersDBHandler             *UsersDBHandler
+	PhotosDBHandler            *PhotoDBHandler
+	SessionDBHandler           *SessionDBHandler
+	AutomobileDBHandler        *AutomobileDBHandler
+	ReviewsDBHandler           *ReviewsDBHandler
+	TripsDBHandler             *TripsDBHandler
+	TripSubscriptionDBHandlers *TripSubscriptionDBHandler
 }
 
 func InitDB(user, password, dbName string) (*Database, error) {
@@ -42,13 +43,14 @@ func InitDB(user, password, dbName string) (*Database, error) {
 
 	// Fill and return a Database struct
 	db := Database{
-		conn:                conn,
-		UsersDBHandler:      &UsersDBHandler{conn: conn},
-		PhotosDBHandler:     &PhotoDBHandler{conn: conn},
-		SessionDBHandler:    &SessionDBHandler{conn: conn},
-		AutomobileDBHandler: &AutomobileDBHandler{conn: conn},
-		ReviewsDBHandler:    &ReviewsDBHandler{conn: conn},
-		TripsDBHandler:      &TripsDBHandler{conn: conn},
+		conn:                       conn,
+		UsersDBHandler:             &UsersDBHandler{conn: conn},
+		PhotosDBHandler:            &PhotoDBHandler{conn: conn},
+		SessionDBHandler:           &SessionDBHandler{conn: conn},
+		AutomobileDBHandler:        &AutomobileDBHandler{conn: conn},
+		ReviewsDBHandler:           &ReviewsDBHandler{conn: conn},
+		TripsDBHandler:             &TripsDBHandler{conn: conn},
+		TripSubscriptionDBHandlers: &TripSubscriptionDBHandler{conn: conn},
 	}
 
 	// Upload the default photo if it is not uploaded yet

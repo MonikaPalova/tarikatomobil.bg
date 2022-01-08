@@ -49,6 +49,7 @@ func (a *Application) setupHTTPRoutes() {
 	a.setupAutomobileHandler()
 	a.setupReviewsHandler()
 	a.setupTripsHandler()
+	a.setupTripSubscriptionHandler()
 
 	// Serve UI files
 	a.router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
@@ -96,4 +97,11 @@ func (a *Application) setupTripsHandler() {
 	a.authRouter.Path("/trips/{id}").Methods(http.MethodDelete).HandlerFunc(tripsHandler.Delete)
 	a.router.Path("/trips").Methods(http.MethodGet).HandlerFunc(tripsHandler.GetAll)
 	a.router.Path("/trips/{id}").Methods(http.MethodGet).HandlerFunc(tripsHandler.GetSingle)
+}
+
+func (a *Application) setupTripSubscriptionHandler() {
+	tripSubscriptionHandler := TripSubscriptionHandler{DB: a.db.TripSubscriptionDBHandlers}
+	a.authRouter.Path("/trips/{id}/passengers").Methods(http.MethodPost).HandlerFunc(tripSubscriptionHandler.Post)
+	a.authRouter.Path("/trips/{id}/passengers").Methods(http.MethodDelete).HandlerFunc(tripSubscriptionHandler.Delete)
+	a.router.Path("/trips/{id}/passengers").Methods(http.MethodGet).HandlerFunc(tripSubscriptionHandler.Get)
 }

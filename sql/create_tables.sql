@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS `trip_participations` (
     `trip_id` VARCHAR(36) NOT NULL,
     `passenger_name` VARCHAR(36) NOT NULL,
     FOREIGN KEY (trip_id) REFERENCES trips(id),
-    FOREIGN KEY (passenger_name) REFERENCES users(name)
+    FOREIGN KEY (passenger_name) REFERENCES users(name),
+    UNIQUE (trip_id, passenger_name)
 );
 
 CREATE TABLE IF NOT EXISTS `sessions` (
