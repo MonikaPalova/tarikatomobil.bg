@@ -76,7 +76,7 @@ func (a *Application) setupUserHandler() {
 func (a *Application) setupAutomobileHandler() {
 	automobilesHandler := AutomobileHandler{DB: a.db.AutomobileDBHandler}
 	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPost).HandlerFunc(automobilesHandler.Post)
-	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
+	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPatch).HandlerFunc(automobilesHandler.Patch)
 	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
 	a.router.Path("/users/{name}/automobile").Methods(http.MethodGet).HandlerFunc(automobilesHandler.Get)
 }

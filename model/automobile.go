@@ -6,3 +6,8 @@ type Automobile struct {
 	OwnerName string `json:"ownerName"`
 	Comment   string `json:"comment"`
 }
+
+type AutomobilePatch struct {
+	PhotoID   string `json:"photoId"`
+	Comment   string `json:"comment"`
+}
