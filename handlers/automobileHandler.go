@@ -32,6 +32,11 @@ func (ah *AutomobileHandler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if automobileToCreate.RegNumber == "" {
+		httputils.RespondWithError(w, http.StatusBadRequest, "The registration number cannot be empty", nil, false)
+		return
+	}
+
 	if automobileToCreate.PhotoID == "" {
 		automobileToCreate.PhotoID = model.DefaultPhotoID
 	}
