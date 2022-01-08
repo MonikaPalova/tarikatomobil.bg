@@ -3,8 +3,9 @@ package db
 import "github.com/go-sql-driver/mysql"
 
 const (
-	mysqlDuplicateEntryCode  = 1062
-	mysqlForeignKeyErrorCode = 1452
+	mysqlDuplicateEntryCode   = 1062
+	mysqlForeignKeyErrorCode1 = 1451
+	mysqlForeignKeyErrorCode2 = 1452
 )
 
 type DBErrorType uint8
@@ -39,7 +40,7 @@ func isDuplicateEntryError(err error) bool {
 }
 
 func isForeignKeyError(err error) bool {
-	return checkForSpecificError(err, mysqlForeignKeyErrorCode)
+	return checkForSpecificError(err, mysqlForeignKeyErrorCode1) || checkForSpecificError(err, mysqlForeignKeyErrorCode2)
 }
 
 func checkForSpecificError(err error, errorCode uint16) bool {

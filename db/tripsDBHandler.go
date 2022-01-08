@@ -29,6 +29,9 @@ func (tdb *TripsDBHandler) CreateTrip(trip model.Trip) *DBError {
 func (tdb *TripsDBHandler) DeleteTrip(tripID, caller string) *DBError {
 	result, err := tdb.conn.Exec("DELETE FROM trips WHERE id = ? AND driver_name = ?", tripID, caller)
 	if err != nil {
+		if isForeignKeyError(err) {
+			return NewDBError(err, ErrConflict, "cannot delete a trip that has subscribed passengers")
+		}
 		return NewDBError(err, ErrInternal)
 	}
 	var rowsAffected int64
