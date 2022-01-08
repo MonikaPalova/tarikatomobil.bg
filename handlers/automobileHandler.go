@@ -79,3 +79,20 @@ func (ah *AutomobileHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (ah *AutomobileHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	caller := auth.GetUserFromRequest(r)
+	usernamePathParam := mux.Vars(r)["name"]
+	if caller != usernamePathParam {
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Deleting automobiles for other users is forbidden", nil, false)
+		return
+	}
+
+	if dbErr := ah.DB.DeleteAutomobile(caller); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not delete automobile")
+		return
+	}
+
+	log.Printf("User %s's automobile was successfully deleted", caller)
+	w.WriteHeader(http.StatusNoContent)
+}

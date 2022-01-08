@@ -59,3 +59,19 @@ func (adb *AutomobileDBHandler) UpdateAutomobile(patch model.AutomobilePatch, us
 	}
 	return nil
 }
+
+func (adb *AutomobileDBHandler) DeleteAutomobile(username string) *DBError {
+	result, err := adb.conn.Exec("DELETE FROM automobiles WHERE owner_name = ?", username)
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	var rowsAffected int64
+	rowsAffected, err = result.RowsAffected()
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	if rowsAffected == 0 {
+		return NewDBError(err, ErrNotFound, fmt.Sprintf("user %s does not exist or does not have an automobile", username))
+	}
+	return nil
+}
