@@ -26,7 +26,20 @@ func (tdb *TripsDBHandler) CreateTrip(trip model.Trip) *DBError {
 	return nil
 }
 
-func (tdb *TripsDBHandler) DeleteTrip(tripID string) *DBError {
+func (tdb *TripsDBHandler) DeleteTrip(tripID, caller string) *DBError {
+	result, err := tdb.conn.Exec("DELETE FROM trips WHERE id = ? AND driver_name = ?", tripID, caller)
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	var rowsAffected int64
+	rowsAffected, err = result.RowsAffected()
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	if rowsAffected == 0 {
+		return NewDBError(err, ErrNotFound, fmt.Sprintf("a trip with ID %s owned by %s does not exist",
+			tripID, caller))
+	}
 	return nil
 }
 

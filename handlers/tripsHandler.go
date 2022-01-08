@@ -56,7 +56,18 @@ func (th *TripsHandler) Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TripsHandler) Delete(w http.ResponseWriter, r *http.Request) {
-
+	caller := auth.GetUserFromRequest(r)
+	if caller == "" {
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Only logged-in users can delete trips", nil, false)
+		return
+	}
+	tripID := mux.Vars(r)["id"]
+	if dbErr := th.DB.DeleteTrip(tripID, caller); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not delete trip")
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+	log.Printf("Trip %s successfuly deleted by user %s", tripID, caller)
 }
 
 func (th *TripsHandler) GetAll(w http.ResponseWriter, r *http.Request) {

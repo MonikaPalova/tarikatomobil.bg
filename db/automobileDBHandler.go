@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/model"
+	"time"
 )
 
 type AutomobileDBHandler struct {
@@ -61,6 +62,16 @@ func (adb *AutomobileDBHandler) UpdateAutomobile(patch model.AutomobilePatch, us
 }
 
 func (adb *AutomobileDBHandler) DeleteAutomobile(username string) *DBError {
+	row := adb.conn.QueryRow("SELECT COUNT(*) FROM trips WHERE driver_name = ? AND TIMESTAMP(departure_time) > ?",
+		username, time.Now())
+	var count int
+	if err := row.Scan(&count); err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	if count > 0 {
+		return NewDBError(nil, ErrConflict, "the automobile is registered for future trips")
+	}
+
 	result, err := adb.conn.Exec("DELETE FROM automobiles WHERE owner_name = ?", username)
 	if err != nil {
 		return NewDBError(err, ErrInternal)
