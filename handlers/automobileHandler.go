@@ -44,3 +44,17 @@ func (ah *AutomobileHandler) Post(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Successfully created an automobile with reg. number %s for user %s", automobileToCreate.RegNumber, caller)
 }
+
+func (ah *AutomobileHandler) Get(w http.ResponseWriter, r *http.Request) {
+	usernamePathParam := mux.Vars(r)["name"]
+	automobile, dbErr := ah.DB.GetUserAutomobile(usernamePathParam)
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get user %s's automobile", usernamePathParam))
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(&automobile); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "", err, true)
+		return
+	}
+}

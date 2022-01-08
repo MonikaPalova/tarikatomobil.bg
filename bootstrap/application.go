@@ -78,5 +78,5 @@ func (a *Application) setupAutomobileHandler() {
 	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPost).HandlerFunc(automobilesHandler.Post)
 	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
 	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
-	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
+	a.router.Path("/users/{name}/automobile").Methods(http.MethodGet).HandlerFunc(automobilesHandler.Get)
 }
