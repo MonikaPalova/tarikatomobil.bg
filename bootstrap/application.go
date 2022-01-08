@@ -86,5 +86,5 @@ func (a *Application) setupReviewsHandler() {
 	reviewsHandler := ReviewsHandler{DB: a.db.ReviewsDBHandler}
 	a.router.Path("/users/{name}/reviews").Methods(http.MethodGet).HandlerFunc(reviewsHandler.Get)
 	a.authRouter.Path("/users/{name}/reviews").Methods(http.MethodPost).HandlerFunc(reviewsHandler.Post)
-	a.authRouter.Path("/users/{name}/reviews").Methods(http.MethodDelete).HandlerFunc(reviewsHandler.Delete)
+	a.authRouter.Path("/users/{name}/reviews/{review_id}").Methods(http.MethodDelete).HandlerFunc(reviewsHandler.Delete)
 }

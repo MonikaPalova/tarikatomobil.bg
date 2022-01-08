@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/auth"
 	"github.com/MonikaPalova/tarikatomobil.bg/db"
 	"github.com/MonikaPalova/tarikatomobil.bg/httputils"
@@ -77,5 +78,19 @@ func (rh *ReviewsHandler) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rh *ReviewsHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	caller := auth.GetUserFromRequest(r)
+	usernamePathParam := mux.Vars(r)["name"]
+	if caller != usernamePathParam {
+		httputils.RespondWithError(w, http.StatusUnauthorized, "Deleting reviews for other users is forbidden", nil, false)
+		return
+	}
 
+	reviewID := mux.Vars(r)["review_id"]
+	if dbErr := rh.DB.DeleteReview(reviewID, caller); dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not delete review %s", reviewID))
+		return
+	}
+
+	log.Printf("Review %s was successfully deleted", reviewID)
+	w.WriteHeader(http.StatusNoContent)
 }

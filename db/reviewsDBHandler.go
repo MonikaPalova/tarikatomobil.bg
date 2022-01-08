@@ -56,6 +56,19 @@ func (rdb *ReviewsDBHandler) CreateReview(review model.Review) *DBError {
 	return nil
 }
 
-func (rdb *ReviewsDBHandler) DeleteReview(reviewID string) *DBError {
+func (rdb *ReviewsDBHandler) DeleteReview(reviewID, caller string) *DBError {
+	result, err := rdb.conn.Exec("DELETE FROM reviews WHERE id = ? AND from_user = ?", reviewID, caller)
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	var rowsAffected int64
+	rowsAffected, err = result.RowsAffected()
+	if err != nil {
+		return NewDBError(err, ErrInternal)
+	}
+	if rowsAffected == 0 {
+		return NewDBError(err, ErrNotFound, fmt.Sprintf("a review with ID %s owned by %s does not exist",
+			reviewID, caller))
+	}
 	return nil
 }
