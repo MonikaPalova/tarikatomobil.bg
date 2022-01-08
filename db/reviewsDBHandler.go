@@ -11,11 +11,32 @@ type ReviewsDBHandler struct {
 }
 
 func (rdb *ReviewsDBHandler) GetReviewsForUser(username string) ([]model.Review, *DBError) {
-	return nil, nil
+	rows, err := rdb.conn.Query("SELECT id, from_user, for_user, rating, comment FROM reviews WHERE for_user = ?", username)
+	if err != nil {
+		return nil, NewDBError(err, ErrInternal)
+	}
+	return deserializeReviews(rows)
 }
 
 func (rdb *ReviewsDBHandler) GetReviewsFromUser(username string) ([]model.Review, *DBError) {
-	return nil, nil
+	rows, err := rdb.conn.Query("SELECT id, from_user, for_user, rating, comment FROM reviews WHERE from_user = ?",
+		username)
+	if err != nil {
+		return nil, NewDBError(err, ErrInternal)
+	}
+	return deserializeReviews(rows)
+}
+
+func deserializeReviews(rows *sql.Rows) ([]model.Review, *DBError) {
+	reviews := []model.Review{}
+	for rows.Next() {
+		var review model.Review
+		if err := rows.Scan(&review.ID, &review.FromUser, &review.ForUser, &review.Rating, &review.Comment); err != nil {
+			return nil, NewDBError(err, ErrInternal)
+		}
+		reviews = append(reviews, review)
+	}
+	return reviews, nil
 }
 
 func (rdb *ReviewsDBHandler) CreateReview(review model.Review) *DBError {

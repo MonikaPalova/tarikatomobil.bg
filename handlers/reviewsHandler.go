@@ -53,17 +53,29 @@ func (rh *ReviewsHandler) Post(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rh *ReviewsHandler) Get(w http.ResponseWriter, r *http.Request) {
+	relation := r.URL.Query().Get("relation")
+	username := mux.Vars(r)["name"]
+	var reviews []model.Review
+	var dbErr *db.DBError
 
+	if relation == "for" {
+		reviews, dbErr = rh.DB.GetReviewsForUser(username)
+	} else {
+		reviews, dbErr = rh.DB.GetReviewsFromUser(username)
+	}
+
+	if dbErr != nil {
+		httputils.RespondWithDBError(w, dbErr, "Could not get reviews")
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(reviews); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not serialize reviews into JSON",
+			err, true)
+		return
+	}
 }
 
 func (rh *ReviewsHandler) Delete(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (rh *ReviewsHandler) getReviewsForUser(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (rh *ReviewsHandler) getReviewsFromUser(w http.ResponseWriter, r *http.Request) {
 
 }
