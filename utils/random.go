@@ -3,7 +3,12 @@ package utils
 import (
 	"encoding/hex"
 	"math/rand"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func GenerateRandomString(n int) (string, error) {
 	bytes, err := GenerateRandomBytes(n)

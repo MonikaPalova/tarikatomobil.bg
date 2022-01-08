@@ -12,54 +12,71 @@ import (
 )
 
 type Application struct {
-	db     *Database
-	router *mux.Router
+	db         *Database
+	router     *mux.Router
+	authRouter *mux.Router
 }
 
 func NewApplication() Application {
 	var a Application
-	a.db = initDBConnection()
-	a.router = createHTTPRouter(a.db)
+	a.initDBConnection()
+	a.setupHTTPRoutes()
 	return a
 }
 
-func (a Application) Start() error {
+func (a *Application) Start() error {
 	return http.ListenAndServe(":80", a.router)
 }
 
-func initDBConnection() *Database {
-	db, err := InitDB("root", "", "tarikatomobil")
+func (a *Application) initDBConnection() {
+	var err error
+	a.db, err = InitDB("root", "", "tarikatomobil")
 	if err != nil {
 		log.Fatalf("Could not connect to DB: %s", err.Error())
 	}
 	log.Printf("Successfuly established database connection")
-	return db
 }
 
-func createHTTPRouter(db *Database) *mux.Router {
-	router := mux.NewRouter()
+func (a *Application) setupHTTPRoutes() {
+	a.router = mux.NewRouter()
+	sessionAuthMiddleware := auth.SessionAuthMiddleware{DB: a.db.SessionDBHandler}
+	a.authRouter = a.router.NewRoute().Subrouter()
+	a.authRouter.Use(sessionAuthMiddleware.Middleware)
 
-	usersHandler := UsersHandler{DB: db.UsersDBHandler, PhotosDB: db.PhotosDBHandler}
-	photosHandler := PhotoHandler{DB: db.PhotosDBHandler}
+	a.setupPhotoHandler()
+	a.setupLoginHandler()
+	a.setupUserHandler()
+	a.setupAutomobileHandler()
+
+	// Serve UI files
+	a.router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
+}
+
+func (a *Application) setupPhotoHandler() {
+	photosHandler := PhotoHandler{DB: a.db.PhotosDBHandler}
+	a.authRouter.Path("/photos").Methods(http.MethodPost).HandlerFunc(photosHandler.UploadPhoto)
+	a.router.Path("/photos/{id}").Methods(http.MethodGet).HandlerFunc(photosHandler.GetPhoto)
+}
+
+func (a *Application) setupLoginHandler() {
 	loginHandler := LoginHandler{
-		UserDB:    db.UsersDBHandler,
-		SessionDB: db.SessionDBHandler,
+		UserDB:    a.db.UsersDBHandler,
+		SessionDB: a.db.SessionDBHandler,
 	}
-	sessionAuthMiddleware := auth.SessionAuthMiddleware{DB: db.SessionDBHandler}
+	a.router.Path("/login").Methods(http.MethodPost).HandlerFunc(loginHandler.Login)
+}
 
-	authRouter := router.NewRoute().Subrouter()
-	authRouter.Use(sessionAuthMiddleware.Middleware)
+func (a *Application) setupUserHandler() {
+	usersHandler := UsersHandler{DB: a.db.UsersDBHandler, PhotosDB: a.db.PhotosDBHandler}
+	a.router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)
+	a.router.Path("/users/{name}").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
+	a.authRouter.Path("/users/{name}").Methods(http.MethodPatch).HandlerFunc(usersHandler.Patch)
+}
 
-	router.Path("/login").Methods(http.MethodPost).HandlerFunc(loginHandler.Login)
-
-	router.Path("/users").Methods(http.MethodPost).HandlerFunc(usersHandler.Post)
-	router.Path("/users/{name}").Methods(http.MethodGet).HandlerFunc(usersHandler.Get)
-	authRouter.Path("/users/{name}").Methods(http.MethodPatch).HandlerFunc(usersHandler.Patch)
-
-	authRouter.Path("/photos").Methods(http.MethodPost).HandlerFunc(photosHandler.UploadPhoto)
-	router.Path("/photos/{id}").Methods(http.MethodGet).HandlerFunc(photosHandler.GetPhoto)
-
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./ui")))
-
-	return router
+func (a *Application) setupAutomobileHandler() {
+	automobilesHandler := AutomobileHandler{DB: a.db.AutomobileDBHandler}
+	a.authRouter.Path("/users/{name}/automobile").Methods(http.MethodPost).HandlerFunc(automobilesHandler.Post)
+	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
+	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
+	//a.router.Path("/users/{name}/automobile").Methods().HandlerFunc(automobilesHandler.)
 }

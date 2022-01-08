@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `photos` (
 );
 
 CREATE TABLE IF NOT EXISTS `users` (
-    `name` VARCHAR(36) NOT NULL UNIQUE,
+    `name` VARCHAR(36) NOT NULL PRIMARY KEY,
     `password` VARCHAR(36) NOT NULL,
     `email` VARCHAR(64) NOT NULL,
     `phone_number` VARCHAR(15) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `automobiles` (
     `reg_num` VARCHAR(16) NOT NULL PRIMARY KEY,
     `photo_id` VARCHAR(36) NOT NULL,
     `comment` VARCHAR(256),
-    `owner_name` VARCHAR(36) NOT NULL,
+    `owner_name` VARCHAR(36) NOT NULL UNIQUE,
     FOREIGN KEY (photo_id) REFERENCES photos(id),
     FOREIGN KEY (owner_name) REFERENCES users(name)
 );

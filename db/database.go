@@ -14,10 +14,11 @@ const (
 )
 
 type Database struct {
-	conn             *sql.DB
-	UsersDBHandler   *UsersDBHandler
-	PhotosDBHandler  *PhotoDBHandler
-	SessionDBHandler *SessionDBHandler
+	conn                *sql.DB
+	UsersDBHandler      *UsersDBHandler
+	PhotosDBHandler     *PhotoDBHandler
+	SessionDBHandler    *SessionDBHandler
+	AutomobileDBHandler *AutomobileDBHandler
 }
 
 func InitDB(user, password, dbName string) (*Database, error) {
@@ -37,22 +38,23 @@ func InitDB(user, password, dbName string) (*Database, error) {
 		return nil, err
 	}
 
-	// Upload the default photo if it is not uploaded yet
-	defaultPhoto := model.Photo{
-		ID: model.DefaultPhotoID,
+	// Fill and return a Database struct
+	db := Database{
+		conn:                conn,
+		UsersDBHandler:      &UsersDBHandler{conn: conn},
+		PhotosDBHandler:     &PhotoDBHandler{conn: conn},
+		SessionDBHandler:    &SessionDBHandler{conn: conn},
+		AutomobileDBHandler: &AutomobileDBHandler{conn: conn},
 	}
+
+	// Upload the default photo if it is not uploaded yet
 	var defaultPhotoBytes []byte
 	if defaultPhotoBytes, err = ioutil.ReadFile(defaultPhotoFile); err != nil {
 		return nil, fmt.Errorf("could not load default photo from %s: %s", defaultPhotoFile, err.Error())
 	}
-	defaultPhoto.Base64Content = string(defaultPhotoBytes)
-
-	// Fill and return a Database struct
-	db := Database{
-		conn:             conn,
-		UsersDBHandler:   &UsersDBHandler{conn: conn},
-		PhotosDBHandler:  &PhotoDBHandler{conn: conn},
-		SessionDBHandler: &SessionDBHandler{conn: conn},
+	defaultPhoto := model.Photo{
+		ID:            model.DefaultPhotoID,
+		Base64Content: string(defaultPhotoBytes),
 	}
 
 	dbErr := db.PhotosDBHandler.UploadPhoto(&defaultPhoto)
