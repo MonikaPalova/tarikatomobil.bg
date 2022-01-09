@@ -164,7 +164,9 @@ func (th *TripsHandler) GetTripsForUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	trips, dbErr := th.DB.GetTripsForUser(caller)
+	isDriver := r.URL.Query().Get("isDriver") == "true"
+
+	trips, dbErr := th.DB.GetTripsForUser(caller, isDriver)
 	if dbErr != nil {
 		httputils.RespondWithDBError(w, dbErr, fmt.Sprintf("Could not get trips for user %s", caller))
 		return
