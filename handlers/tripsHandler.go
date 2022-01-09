@@ -113,15 +113,16 @@ func parseTripFilterQuery(query url.Values) (model.TripFilter, error) {
 		return filter, errors.New("when filtering, the to query param is mandatory")
 	}
 
+	const timeFormat = "2006-Jan-02"
 	var err error
 	if before, ok := query["before"]; ok {
-		if filter.Before, err = time.Parse("2022-01-08T11:56:00Z", before[0]); err != nil {
+		if filter.Before, err = time.Parse(timeFormat, before[0]); err != nil {
 			return filter, fmt.Errorf("could not parse the before query param: %s", err.Error())
 		}
 	}
 
 	if after, ok := query["after"]; ok {
-		if filter.After, err = time.Parse("2022-01-08T11:56:00Z", after[0]); err != nil {
+		if filter.After, err = time.Parse(timeFormat, after[0]); err != nil {
 			return filter, fmt.Errorf("could not parse the after query param: %s", err.Error())
 		}
 	}
