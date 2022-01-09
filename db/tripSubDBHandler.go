@@ -48,6 +48,18 @@ func (tsdb *TripSubscriptionDBHandler) GetFreeSpotsCount(tripID string) (int, *D
 	return maxTripPassengers - len(subscribedUsers), nil
 }
 
+func (tsdb *TripSubscriptionDBHandler) GetTripOwner(tripID string) (string, *DBError) {
+	var username string
+	row := tsdb.conn.QueryRow("SELECT driver_name FROM trips WHERE id = ? ", tripID)
+	if err := row.Scan(&username); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return username, NewDBError(err, ErrNotFound, fmt.Sprintf("trip with id %s does not exist", tripID))
+		}
+		return username, NewDBError(err, ErrInternal)
+	}
+	return username, nil
+}
+
 func (tsdb *TripSubscriptionDBHandler) SubscribePassenger(username, tripID string) *DBError {
 	if _, err := tsdb.conn.Exec("INSERT INTO trip_participations (trip_id, passenger_name) VALUES(?,?)",
 		tripID, username); err != nil {

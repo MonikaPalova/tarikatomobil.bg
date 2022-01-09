@@ -50,7 +50,25 @@ func (tsh *TripSubscriptionHandler) Delete(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	tripID := mux.Vars(r)["id"]
-	if dbErr := tsh.DB.UnsubscribePassenger(caller, tripID); dbErr != nil {
+
+	passengerToUnsubscribe := caller
+
+	userToKick := r.URL.Query().Get("kickUser")
+	if userToKick != "" {
+		// Then check that the caller is actually the owner of the trip
+		tripOwner, dbErr := tsh.DB.GetTripOwner(tripID)
+		if dbErr != nil {
+			httputils.RespondWithDBError(w, dbErr, "Kicking user failed")
+			return
+		}
+		if tripOwner != caller {
+			httputils.RespondWithError(w, http.StatusBadRequest, "Only trip owners can kick users", nil, false)
+			return
+		}
+		passengerToUnsubscribe = userToKick
+	}
+
+	if dbErr := tsh.DB.UnsubscribePassenger(passengerToUnsubscribe, tripID); dbErr != nil {
 		httputils.RespondWithDBError(w, dbErr, "Unsubscription failed")
 		return
 	}
