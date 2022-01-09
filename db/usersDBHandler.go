@@ -39,6 +39,9 @@ func (uh *UsersDBHandler) CreateUser(user User) *DBError {
 		if isDuplicateEntryError(err) {
 			return NewDBError(err, ErrConflict, fmt.Sprintf("user %s already exists", user.Name))
 		}
+		if isForeignKeyError(err) {
+			return NewDBError(err, ErrNotFound, fmt.Sprintf("photo with ID %s does not exist", user.PhotoID))
+		}
 		return NewDBError(err, ErrInternal)
 	}
 	return nil
