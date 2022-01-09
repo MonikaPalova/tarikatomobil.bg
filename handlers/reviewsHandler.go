@@ -49,6 +49,11 @@ func (rh *ReviewsHandler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := json.NewEncoder(w).Encode(reviewToCreate); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal review to JSON", err, true)
+		return
+	}
+
 	log.Printf("Review from user %s to user %s with rating %d successfully created", reviewToCreate.FromUser,
 		reviewToCreate.ForUser, reviewToCreate.Rating)
 }
