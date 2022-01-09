@@ -68,5 +68,13 @@ func InitDB(user, password, dbName string) (*Database, error) {
 		return nil, fmt.Errorf("could not upload the default photo to the database: %s", dbErr.Err.Error())
 	}
 
+	// Create an event for cleanup of sessions
+	if _, err = conn.Exec(`CREATE EVENT IF NOT EXISTS session_cleaner
+					 ON SCHEDULE 
+					 EVERY 1 DAY
+					 DO
+						DELETE FROM sessions WHERE TIMESTAMP(expiration)<NOW()`); err != nil {
+		return nil, fmt.Errorf("could not create session cleaner event: %s", err.Error())
+	}
 	return &db, nil
 }
