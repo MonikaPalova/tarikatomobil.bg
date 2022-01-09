@@ -42,23 +42,30 @@ func (adb *AutomobileDBHandler) CreateAutomobile(a model.Automobile) *DBError {
 	return nil
 }
 
-func (adb *AutomobileDBHandler) UpdateAutomobile(patch model.AutomobilePatch, username string) *DBError {
+func (adb *AutomobileDBHandler) UpdateAutomobile(patch model.AutomobilePatch, username string) (model.Automobile, *DBError) {
 	updateQuery := `UPDATE automobiles SET automobiles.photo_id = IF(?='', automobiles.photo_id, ?),
 		       						   	   automobiles.comment = IF(?='', automobiles.comment, ?)
 									   WHERE automobiles.owner_name = ?`
 
+	var updatedAutomobile model.Automobile
+
 	stmt, err := adb.conn.Prepare(updateQuery)
 	if err != nil {
-		return NewDBError(err, ErrInternal)
+		return updatedAutomobile, NewDBError(err, ErrInternal)
 	}
 	_, err = stmt.Exec(patch.PhotoID, patch.PhotoID, patch.Comment, patch.Comment, username)
 	if err != nil {
 		if isForeignKeyError(err) { // If the photo with given ID does not exist
-			return NewDBError(err, ErrConflict, fmt.Sprintf("a photo with ID %s does not exist", patch.PhotoID))
+			return updatedAutomobile, NewDBError(err, ErrConflict, fmt.Sprintf("a photo with ID %s does not exist", patch.PhotoID))
 		}
-		return NewDBError(err, ErrInternal)
+		return updatedAutomobile, NewDBError(err, ErrInternal)
 	}
-	return nil
+	row := adb.conn.QueryRow("SELECT reg_num, photo_id, comment, owner_name FROM automobiles WHERE owner_name=?", username)
+	if err = row.Scan(&updatedAutomobile.RegNumber, &updatedAutomobile.PhotoID,
+		&updatedAutomobile.Comment, &updatedAutomobile.OwnerName); err != nil {
+		return updatedAutomobile, NewDBError(err, ErrInternal)
+	}
+	return updatedAutomobile, nil
 }
 
 func (adb *AutomobileDBHandler) DeleteAutomobile(username string) *DBError {

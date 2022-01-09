@@ -64,10 +64,17 @@ func (ah *AutomobileHandler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dbErr := ah.DB.UpdateAutomobile(automobilePatch, caller); dbErr != nil {
+	updatedAutomobile, dbErr := ah.DB.UpdateAutomobile(automobilePatch, caller);
+	if dbErr != nil {
 		httputils.RespondWithDBError(w, dbErr, "Could not update automobile")
 		return
 	}
+
+	if err := json.NewEncoder(w).Encode(updatedAutomobile); err != nil {
+		httputils.RespondWithError(w, http.StatusInternalServerError, "Could not marshal updated automobile", err, true)
+		return
+	}
+
 	log.Printf("User %s's automobile was successfuly updated", caller)
 }
 
