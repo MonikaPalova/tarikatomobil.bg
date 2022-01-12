@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+</html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>TarikatMobil.bg</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/trips.css">
+</head>
+
+<body>
+  <header id="main-header">
+    <a href="">
+      <h1>TarikatMobil</h1>
+    </a>
+    <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
+    <div class="search-container">
+      <form action="">
+        <input type="text" placeholder="Търси.." name="search" />
+      </form>
+    </div>
+    <nav class="not-logged-in">
+      <ul id="navigation-list">
+        <li>
+          <a href="">Вход/Регистрация</a>
+        </li>
+      </ul>
+    </nav>
+    <nav class="logged-in">
+      <ul id="navigation-list">
+        <li>
+          <a href="">Профил</a>
+        </li>
+        <li>
+          <a href="">Изход</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="search-trips" class="row coloured-field centered-field">
+    <div class="column">
+      <label for="start-destination">От:</label>
+      <input list="cities-list" id="start-destination" class="destination-select" />
+      <label for="end-destination">До:</label>
+      <input list="cities-list" id="end-destination" class="destination-select" />
+      <datalist id="cities-list"></datalist>
+    </div>
+    <div class="column">
+      <label for="date-time">Дата:</label>
+      <input type="datetime-local" id="date-time">
+      <label for="price" id="chosen-price-text">Максимална цена: 4.50</label>
+      <input id="price" type="range" min="0" max="50" value="4.50" step="0.1"
+        onchange='document.getElementById("chosen-price-text").innerHTML=`Максимална цена: ${price.value}`' />
+    </div>
+    <div id="details" class="column">
+      <label for="details">Детайли:</label>
+      <div>
+        <input type="checkbox" id="smoking">
+        <label for="smoking">Пушене</label>
+      </div>
+      <div>
+        <input type="checkbox" id="air-conditioning">
+        <label for="air-conditioning">Климатик</label>
+      </div>
+      <div>
+        <input type="checkbox" id="pets">
+        <label for="pets">Домашни любимци</label>
+      </div>
+    </div>
+    <img src="images/search.svg" />
+  </section>
+  <section id="trips">
+    <div class="row coloured-field centered-field trip">
+      <p>София - Благоевград</p>
+      <div class="trip-details row">
+        <img class="icon" src="images/cig.png" />
+        <img class="icon" src="images/ac.png" />
+        <img class="icon" src="images/paw.png" />
+        <div class="trip-date-time">21.12.2021</div>
+        <div class="trip-date-time">10:00</div>
+      </div>
+    </div>
+  </section>
+</body>
+
+<script type="text/javascript" src="./scripts/trips.js"></script>
+
+</html>

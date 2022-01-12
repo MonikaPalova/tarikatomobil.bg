@@ -1,0 +1,73 @@
+/* id */
+
+#search-trips {
+    height:20%;
+    padding: 1%;
+    width:50%;
+    justify-content: space-around;
+}
+
+#trips{
+    height:70%;
+}
+/* elements */
+
+
+label{
+    align-self:left;
+    margin-top:10%;
+}
+/* classes */
+
+.column {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.row{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.coloured-field{
+    background: #E6FCE2;
+    border: 2px solid #ADE6A8;
+}
+
+.centered-field{
+    margin:2% auto;
+}
+
+.destination-select {
+    width: 120%;
+}
+
+.icon {
+    width: 10%;
+    height:70%;
+    align-self: center;
+}
+
+.trip{
+    width:40%;
+    padding:0 2%;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.trip-date-time{
+    background-color: #3da459;
+    border-radius:20px;
+    color:white;
+    align-self: center;
+    padding:3% 4%;
+}
+
+.trip-details{
+    display:flex;
+    justify-content: space-between;
+    width: 40%;
+}   
