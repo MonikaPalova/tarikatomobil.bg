@@ -46,19 +46,10 @@ func (tdb *TripsDBHandler) DeleteTrip(tripID, caller string) *DBError {
 	return nil
 }
 
-func (tdb *TripsDBHandler) GetTrips(filter model.TripFilter) ([]model.Trip, *DBError) {
+func (tdb *TripsDBHandler) GetTrips() ([]model.Trip, *DBError) {
 	query := `SELECT id, location_from, location_to, departure_time, driver_name, price,
-		max_passengers, air_conditioning, smoking, pets, comment FROM trips
-		WHERE
-		location_from = ? AND
-		location_to = ? AND 
-		TIMESTAMP(departure_time) > ? AND TIMESTAMP(departure_time) < ? AND
-		price < ? AND
-		air_conditioning = ? AND
-		smoking = ? AND
-		pets = ?`
-	rows, err := tdb.conn.Query(query, filter.From, filter.To, filter.After, filter.Before, filter.MaxPrice,
-		filter.AirConditioning, filter.Smoking, filter.Pets)
+		max_passengers, air_conditioning, smoking, pets, comment FROM trips`
+	rows, err := tdb.conn.Query(query)
 	if err != nil {
 		return nil, NewDBError(err, ErrInternal)
 	}

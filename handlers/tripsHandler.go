@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/MonikaPalova/tarikatomobil.bg/auth"
 	"github.com/MonikaPalova/tarikatomobil.bg/db"
@@ -82,14 +81,14 @@ func (th *TripsHandler) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (th *TripsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	filter, err := parseTripFilterQuery(r.URL.Query())
-	if err != nil {
-		httputils.RespondWithError(w, http.StatusBadRequest, "Query string is not properly formatted", err, false)
-		return
-	}
-	trips, dbErr := th.DB.GetTrips(filter)
+	trips, dbErr := th.DB.GetTrips()
 	if dbErr != nil {
 		httputils.RespondWithDBError(w, dbErr, "Could not retrieve trips")
+		return
+	}
+
+	if err := filterTrips(&trips, r.URL.Query()); err != nil {
+		httputils.RespondWithError(w, http.StatusBadRequest, "Query string is not properly formatted", err, false)
 		return
 	}
 
@@ -101,46 +100,89 @@ func (th *TripsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Println("Trips successfully retrieved")
 }
 
-func parseTripFilterQuery(query url.Values) (model.TripFilter, error) {
-	filter := model.DefaultTripFilter()
-	filter.From = query.Get("from")
-	if filter.From == "" {
-		return filter, errors.New("when filtering, the from query param is mandatory")
+func filterTrips(trips *[]model.Trip, query url.Values) error {
+	if fromParam, ok := query["from"]; ok {
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.From == fromParam[0]
+		})
 	}
 
-	filter.To = query.Get("to")
-	if filter.To == "" {
-		return filter, errors.New("when filtering, the to query param is mandatory")
+	if toParam, ok := query["to"]; ok {
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.To == toParam[0]
+		})
 	}
 
-	const timeFormat = "2006-Jan-02"
 	var err error
-	if before, ok := query["before"]; ok {
-		if filter.Before, err = time.Parse(timeFormat, before[0]); err != nil {
-			return filter, fmt.Errorf("could not parse the before query param: %s", err.Error())
+	const timeFormat = "2006-Jan-02"
+	if beforeParam, ok := query["before"]; ok {
+		var before time.Time
+		if before, err = time.Parse(timeFormat, beforeParam[0]); err != nil {
+			return fmt.Errorf("could not parse the before query param: %s", err.Error())
 		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.When.Before(before)
+		})
 	}
 
-	if after, ok := query["after"]; ok {
-		if filter.After, err = time.Parse(timeFormat, after[0]); err != nil {
-			return filter, fmt.Errorf("could not parse the after query param: %s", err.Error())
+	if afterParam, ok := query["after"]; ok {
+		var after time.Time
+		if after, err = time.Parse(timeFormat, afterParam[0]); err != nil {
+			return fmt.Errorf("could not parse the after query param: %s", err.Error())
+		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.When.After(after)
+		})
+	}
+	if maxPriceParam, ok := query["maxPrice"]; ok {
+		var maxPrice float64
+		if maxPrice, err = strconv.ParseFloat(maxPriceParam[0], 32); err != nil {
+			return fmt.Errorf("could not parse the maxPrice query param as a float: %s", err.Error())
+		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.Price <= maxPrice
+		})
+	}
+
+	if airConditioningParam, ok := query["airConditioning"]; ok {
+		var airConditioning bool
+		if airConditioning, err = strconv.ParseBool(airConditioningParam[0]); err != nil {
+			return fmt.Errorf("could not parse the airConditioning query param as a boolean: %s", err.Error())
+		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.AirConditioning == airConditioning
+		})
+	}
+	if smokingParam, ok := query["smoking"]; ok {
+		var smoking bool
+		if smoking, err = strconv.ParseBool(smokingParam[0]); err != nil {
+			return fmt.Errorf("could not parse the smoking query param as a boolean: %s", err.Error())
+		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.Smoking == smoking
+		})
+	}
+	if petsParam, ok := query["pets"]; ok {
+		var pets bool
+		if pets, err = strconv.ParseBool(petsParam[0]); err != nil {
+			return fmt.Errorf("could not parse the pets query param as a boolean: %s", err.Error())
+		}
+		removeUnless(trips, func(trip model.Trip) bool {
+			return trip.Pets == pets
+		})
+	}
+	return nil
+}
+
+func removeUnless(trips *[]model.Trip, condition func(model.Trip) bool) {
+	n:=0
+	for _, trip := range *trips {
+		if condition(trip) {
+			(*trips)[n] = trip
+			n++
 		}
 	}
-	if maxPrice, ok := query["maxPrice"]; ok {
-		if filter.MaxPrice, err = strconv.ParseFloat(maxPrice[0], 32); err != nil {
-			return filter, fmt.Errorf("could not parse the maxPrice query param as a float: %s", err.Error())
-		}
-	}
-	if query.Get("airConditioning") == "true" {
-		filter.AirConditioning = true
-	}
-	if query.Get("smoking") == "true" {
-		filter.Smoking = true
-	}
-	if query.Get("pets") == "true" {
-		filter.Pets = true
-	}
-	return filter, nil
+	*trips = (*trips)[:n]
 }
 
 func (th *TripsHandler) GetSingle(w http.ResponseWriter, r *http.Request) {
