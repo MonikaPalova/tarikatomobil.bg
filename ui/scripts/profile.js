@@ -29,7 +29,7 @@ function getUserInfo() {
             loadError(req.responseText);
         }
       };
-    req.open('GET', "http://localhost:80/users/" + username, true);
+    req.open('GET', "/users/" + username, true);
     req.send();
 
     return response;
@@ -49,6 +49,6 @@ function setPhoto(id) {
             loadError(req.responseText);
         }
       };
-    req.open('GET', "http://localhost:80/photos/" + id, true);
+    req.open('GET', "/photos/" + id, true);
     req.send();
 }
