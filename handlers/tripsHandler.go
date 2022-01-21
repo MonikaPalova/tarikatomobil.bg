@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -103,13 +104,13 @@ func (th *TripsHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 func filterTrips(trips *[]model.Trip, query url.Values) error {
 	if fromParam, ok := query["from"]; ok {
 		removeUnless(trips, func(trip model.Trip) bool {
-			return trip.From == fromParam[0]
+			return strings.EqualFold(trip.From, fromParam[0])
 		})
 	}
 
 	if toParam, ok := query["to"]; ok {
 		removeUnless(trips, func(trip model.Trip) bool {
-			return trip.To == toParam[0]
+			return strings.EqualFold(trip.To, toParam[0])
 		})
 	}
 
@@ -175,7 +176,7 @@ func filterTrips(trips *[]model.Trip, query url.Values) error {
 }
 
 func removeUnless(trips *[]model.Trip, condition func(model.Trip) bool) {
-	n:=0
+	n := 0
 	for _, trip := range *trips {
 		if condition(trip) {
 			(*trips)[n] = trip
