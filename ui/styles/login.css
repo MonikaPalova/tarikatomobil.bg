@@ -1,0 +1,67 @@
+.form-item {
+    width: 100%;
+    border-style: none;
+    padding-left: 7px;
+    border-style: solid;
+    border-color: #c3cdc0;
+    border-width: 2px;
+    height: 35px;
+    margin-bottom: 0;
+    font-size: 15px;
+}
+
+#submit-btn {
+    margin-top: 10px;
+    background-color: #558d3d;
+    color: white;
+    font-size: 15px;
+    font-weight: lighter;
+    border-style: none;
+    width: 50%;
+    height: 50px;
+}
+
+#submit-btn:hover {
+    background-color: #ffffff;
+    color: #558d3d;
+}
+
+#submit-form {
+    width: 400px;
+    height: 370px;
+    margin: auto;
+    margin-top: 50px;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.form-item:hover {
+    border-color: #79a06b;
+}
+
+#credentials-section p {
+    text-align: center;
+}
+
+.error {
+    width: 100%;
+    border-style: none;
+    padding-left: 7px;
+    background-color: #b0706d;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    font-family: 'Times New Roman', Times, serif;
+    height: 50px;
+    margin-bottom: 0;
+
+    display: none;
+}
+
+#error {
+    border-style: none;
+    padding-left: 7px;
+    color: red;
+    font-weight: 600;
+    font-size: 15px;
+}
