@@ -1,6 +1,7 @@
 // on load logic
 
 window.addEventListener("load", function () {
+    onLoadHideNotLoggedIn();
     _readCities();
     _loadTrips();
 });
