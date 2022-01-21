@@ -89,11 +89,27 @@ label {
 }
 
 .trips-error {
-
     background-color: #ffc0c0;
     width: fit-content;
     padding: 1% 2%;
     border: 1px solid #f36868;
     border-radius: 10px;
-    margin: 0% 35%;
+    margin: 2% auto;
+}
+
+.trips-notification {
+    background-color: #c5c5c5;
+    width: fit-content;
+    padding: 1% 2%;
+    border: 1px solid #9b9b9b;
+    border-radius: 10px;
+    margin: 2% auto;
+}
+
+/* is driver logic */
+#is-driver-select {
+    cursor: pointer;
+    margin: 1%;
+    padding: 1% 1%;
+    border-radius: 10px;
 }

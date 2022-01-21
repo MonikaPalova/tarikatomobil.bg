@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Моите пътувания</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/trips.css">
+    <script src="scripts/common.js"></script>
+</head>
+
+<body>
+    <header id="main-header">
+        <a href="index.html">
+            <h1 class="dark-bg-link">TarikatMobil</h1>
+        </a>
+        <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
+        <div id="search-container">
+            <form action="">
+                <input id="search-input" type="text" placeholder="Търси.." name="search" />
+            </form>
+        </div>
+        <nav class="not-logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" href="">Профил</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <select name="is-driver-select" id="is-driver-select" class="coloured-field" onchange="showCurrentUserTrips()">
+        <option value="true" selected>Шофьор</option>
+        <option value="false">Пътник</option>
+    </select>
+
+    <section id="trips">
+    </section>
+</body>
+
+<script type="text/javascript" src="./scripts/trips.js"></script>
+<script type="text/javascript" src="./scripts/myTrips.js"></script>
+
+</html>
