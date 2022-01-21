@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="styles/trips.css">
   <script src="scripts/common.js"></script>
-<!--  <script src="scripts/trips.js"></script>-->
 </head>
 
 <body>
@@ -53,8 +52,8 @@
       <datalist id="cities-list"></datalist>
     </div>
     <div class="column">
-      <label for="date-time">Дата:</label>
-      <input type="datetime-local" id="date-time">
+      <label for="trip-date">Дата:</label>
+      <input type="date" id="trip-date">
       <label for="maxprice" id="chosen-price-text">Максимална цена: 4.50</label>
       <input id="maxprice" type="range" min="0" max="50" value="4.50" step="0.1"
         onchange='document.getElementById("chosen-price-text").innerHTML=`Максимална цена: ${maxprice.value}`' />

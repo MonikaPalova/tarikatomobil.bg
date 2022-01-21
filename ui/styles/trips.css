@@ -84,3 +84,13 @@ label {
 .from-to {
     font-size: 1.2rem;
 }
+
+.trips-error {
+
+    background-color: #ffc0c0;
+    width: fit-content;
+    padding: 1% 2%;
+    border: 1px solid #f36868;
+    border-radius: 10px;
+    margin: 0% 35%;
+}

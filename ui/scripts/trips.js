@@ -1,5 +1,4 @@
 // on load logic
-
 window.addEventListener("load", function () {
     onLoadHideNotLoggedIn();
     _readCities();
@@ -144,8 +143,17 @@ function filterTrips() {
     let from = document.getElementById("start-destination").value;
     let to = document.getElementById("end-destination").value;
     // TODO before, after
-    let before = "";
-    let after = "";
+    var dateStr = document.getElementById("trip-date").value;
+    if (dateStr != "") {
+        let date = new Date(dateStr);
+        if (date.valueOf() < new Date().setHours(0,0,0,0).valueOf()) {
+            _showError("Датата за пътуване не може да бъде в миналото");
+            return;
+        }
+        let before = _formatDate(new Date(date.getTime() + 28 * 60 * 60 * 1000));
+        let after = _formatDate(new Date(date.getTime() - 20 * 60 * 60 * 1000));
+        builder = builder.setBefore(before).setAfter(after);
+    }
     let maxPrice = document.getElementById("maxprice").value;
     let airConditioning = _determineBooleanParam("air-conditioning-yes", "air-conditioning-no");
     let smoking = _determineBooleanParam("smoking-yes", "smoking-no");
@@ -154,8 +162,6 @@ function filterTrips() {
     let url = builder //
         .setFrom(from) //
         .setTo(to) //
-        .setBefore(before) //
-        .setAfter(after) //
         .setMaxPrice(maxPrice) //
         .setAirConditioning(airConditioning) //
         .setSmoking(smoking) //
@@ -169,15 +175,6 @@ function filterTrips() {
 // BUILD TRIPS API URL
 let TripsURLBuilder = function () {
 
-    let from = "";
-    let to = "";
-    let before = "";
-    let after = "";
-    let maxPrice = "";
-    let airConditioning = "";
-    let smoking = "";
-    let pets = "";
-
     var url = "/trips";
 
     let _addQueryParam = function (isFirst, paramName, paramValue) {
@@ -189,6 +186,15 @@ let TripsURLBuilder = function () {
     }
 
     return {
+        from: "",
+        to: "",
+        before: "",
+        after: "",
+        maxPrice: "",
+        airConditioning: "",
+        smoking: "",
+        pets: "",
+
         setFrom: function (from) {
             this.from = from;
             return this;
@@ -235,3 +241,23 @@ let TripsURLBuilder = function () {
         }
     };
 };
+
+
+// helper methods
+function _formatDate(date) {
+    let day = date.toLocaleString('default', { day: '2-digit' });
+    let month = date.toLocaleString('default', { month: 'short' });
+    let year = date.toLocaleString('default', { year: 'numeric' });
+    return year + '-' + month + '-' + day;
+}
+
+function _showError(msg) {
+    var tripsSection = document.getElementById("trips");
+    _removeChildren(tripsSection);
+
+    var error = document.createElement("p");
+    error.classList.add("trips-error");
+    error.innerHTML=msg;
+
+    tripsSection.appendChild(error);
+}
