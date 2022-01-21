@@ -110,14 +110,17 @@ function _addTrip(section, trip) {
     var dateTime = new Date(Date.parse(trip.when));
     let date = ('0' + dateTime.getUTCDate()).slice(-2);
     let month = ('0' + (dateTime.getUTCMonth() + 1)).slice(-2);
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-details-string">${date}.${month}.${dateTime.getUTCFullYear()}</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${date}.${month}.${dateTime.getUTCFullYear()}</div>`);
 
     let hours = ('0' + (dateTime.getUTCHours() + 2)).slice(-2);
     let minutes = ('0' + dateTime.getUTCMinutes()).slice(-2);
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-details-string">${hours}:${minutes}</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${hours}:${minutes}</div>`);
 
     let price = (trip.price + '0').slice(0, trip.price < 10 ? 4 : 5);
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-details-string">${price}лв.</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${price}лв.</div>`);
+
+    // TODO
+    tripDetails.insertAdjacentHTML('beforeend', `<a  class="trip-detail" href="ADD_URL_TO_THIS_TRIP"><img src="images/open.svg"/></a>`);
 
     tripObj.appendChild(tripDetails);
 

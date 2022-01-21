@@ -66,10 +66,13 @@ label {
     justify-content: space-between;
 }
 
-.trip-details-string {
+.trip-detail-string {
     background-color: #3da459;
     border-radius: 20px;
     color: white;
+}
+
+.trip-detail {
     align-self: center;
     padding: 3% 4%;
     margin-left: 5%;
