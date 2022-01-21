@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>TarikatMobil.bg</title>
   <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/trips.css">
   <script src="scripts/common.js"></script>
   <script src="scripts/index.js"></script>
 </head>
@@ -21,11 +22,11 @@
       </form>
     </div>
     <nav class="not-logged-in">
-        <ul id="navigation-list">
-            <li>
-                <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
-            </li>
-        </ul>
+      <ul id="navigation-list">
+        <li>
+          <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+        </li>
+      </ul>
     </nav>
 
     <nav class="logged-in">
@@ -40,6 +41,48 @@
     </nav>
 
   </header>
+  <form id="search-trips" class="row coloured-field centered-field" onsubmit="filterTrips()">
+    <div class="column">
+      <label for="start-destination">От:</label>
+      <input list="cities-list" id="start-destination" class="destination-select" />
+      <label for="end-destination">До:</label>
+      <input list="cities-list" id="end-destination" class="destination-select" />
+      <datalist id="cities-list"></datalist>
+    </div>
+    <div class="column">
+      <label for="trip-date">Дата:</label>
+      <input type="date" id="trip-date">
+      <label for="maxprice" id="chosen-price-text">Максимална цена: 4.50</label>
+      <input id="maxprice" type="range" min="0" max="50" value="4.50" step="0.1"
+        onchange='document.getElementById("chosen-price-text").innerHTML=`Максимална цена: ${maxprice.value}`' />
+    </div>
+    <div id="details" class="column">
+      <div class="row checkbox-labels">
+        <label for="yes">Да</label>
+        <label for="no">Не</label>
+      </div>
+      <div>
+        <input type="checkbox" id="smoking-yes">
+        <input type="checkbox" id="smoking-no">
+        <label for="smoking">Пушене</label>
+      </div>
+      <div>
+        <input type="checkbox" id="air-conditioning-yes">
+        <input type="checkbox" id="air-conditioning-no">
+        <label for="air-conditioning">Климатик</label>
+      </div>
+      <div>
+        <input type="checkbox" id="pets-yes">
+        <input type="checkbox" id="pets-no">
+        <label for="pets">Домашни любимци</label>
+      </div>
+    </div>
+    <input type="image" alt="Търси" src="images/search.svg" />
+  </form>
+  <section id="trips">
+  </section>
 </body>
+
+<script type="text/javascript" src="./scripts/trips.js"></script>
 
 </html>
