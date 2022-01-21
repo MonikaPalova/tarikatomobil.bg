@@ -8,39 +8,43 @@
   <title>TarikatMobil.bg</title>
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="styles/trips.css">
+  <script src="scripts/common.js"></script>
+  <script src="scripts/trips.js"></script>
 </head>
 
 <body>
   <header id="main-header">
-    <a href="">
-      <h1>TarikatMobil</h1>
+    <a href="index.html">
+      <h1 class="dark-bg-link">TarikatMobil</h1>
     </a>
     <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
-    <div class="search-container">
+    <div id="search-container">
       <form action="">
-        <input type="text" placeholder="Търси.." name="search" />
+        <input id="search-input" type="text" placeholder="Търси.." name="search" />
       </form>
     </div>
     <nav class="not-logged-in">
-      <ul id="navigation-list">
-        <li>
-          <a href="">Вход/Регистрация</a>
-        </li>
-      </ul>
+        <ul id="navigation-list">
+            <li>
+                <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+            </li>
+        </ul>
     </nav>
+
     <nav class="logged-in">
       <ul id="navigation-list">
         <li>
-          <a href="">Профил</a>
+          <a class="dark-bg-link" href="">Профил</a>
         </li>
         <li>
-          <a href="">Изход</a>
+          <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
         </li>
       </ul>
     </nav>
+
   </header>
 
-  <section id="search-trips" class="row coloured-field centered-field">
+  <form id="search-trips" class="row coloured-field centered-field" onsubmit="filterTrips()">
     <div class="column">
       <label for="start-destination">От:</label>
       <input list="cities-list" id="start-destination" class="destination-select" />
@@ -51,38 +55,34 @@
     <div class="column">
       <label for="date-time">Дата:</label>
       <input type="datetime-local" id="date-time">
-      <label for="price" id="chosen-price-text">Максимална цена: 4.50</label>
-      <input id="price" type="range" min="0" max="50" value="4.50" step="0.1"
-        onchange='document.getElementById("chosen-price-text").innerHTML=`Максимална цена: ${price.value}`' />
+      <label for="maxprice" id="chosen-price-text">Максимална цена: 4.50</label>
+      <input id="maxprice" type="range" min="0" max="50" value="4.50" step="0.1"
+        onchange='document.getElementById("chosen-price-text").innerHTML=`Максимална цена: ${maxprice.value}`' />
     </div>
     <div id="details" class="column">
-      <label for="details">Детайли:</label>
+      <div class="row checkbox-labels">
+        <label for="yes">Да</label>
+        <label for="no">Не</label>
+      </div>
       <div>
-        <input type="checkbox" id="smoking">
+        <input type="checkbox" id="smoking-yes">
+        <input type="checkbox" id="smoking-no">
         <label for="smoking">Пушене</label>
       </div>
       <div>
-        <input type="checkbox" id="air-conditioning">
+        <input type="checkbox" id="air-conditioning-yes">
+        <input type="checkbox" id="air-conditioning-no">
         <label for="air-conditioning">Климатик</label>
       </div>
       <div>
-        <input type="checkbox" id="pets">
+        <input type="checkbox" id="pets-yes">
+        <input type="checkbox" id="pets-no">
         <label for="pets">Домашни любимци</label>
       </div>
     </div>
-    <img src="images/search.svg" />
-  </section>
+    <input type="image" alt="Търси" src="images/search.svg" />
+  </form>
   <section id="trips">
-    <div class="row coloured-field centered-field trip">
-      <p>София - Благоевград</p>
-      <div class="trip-details row">
-        <img class="icon" src="images/cig.png" />
-        <img class="icon" src="images/ac.png" />
-        <img class="icon" src="images/paw.png" />
-        <div class="trip-date-time">21.12.2021</div>
-        <div class="trip-date-time">10:00</div>
-      </div>
-    </div>
   </section>
 </body>
 

@@ -5,33 +5,36 @@
   <meta charset="UTF-8">
   <title>TarikatMobil.bg</title>
   <link rel="stylesheet" href="styles/style.css">
+  <script src="scripts/common.js"></script>
+  <script src="scripts/index.js"></script>
 </head>
 
 <body>
   <header id="main-header">
-    <a href="">
-      <h1>TarikatMobil</h1>
+    <a href="index.html">
+      <h1 class="dark-bg-link">TarikatMobil</h1>
     </a>
     <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
-    <div class="search-container">
+    <div id="search-container">
       <form action="">
-        <input type="text" placeholder="Търси.." name="search" />
+        <input id="search-input" type="text" placeholder="Търси.." name="search" />
       </form>
     </div>
     <nav class="not-logged-in">
         <ul id="navigation-list">
             <li>
-                <a href="">Вход/Регистрация</a>
+                <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
             </li>
         </ul>
     </nav>
+
     <nav class="logged-in">
       <ul id="navigation-list">
         <li>
-          <a href="">Профил</a>
+          <a class="dark-bg-link" href="">Профил</a>
         </li>
         <li>
-          <a href="">Изход</a>
+          <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
         </li>
       </ul>
     </nav>
