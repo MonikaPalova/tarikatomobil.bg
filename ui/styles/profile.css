@@ -1,0 +1,29 @@
+
+#profile-photo {
+    width: 100%;
+
+}
+
+#photo {
+    text-align: left;
+    width: 30%;
+}
+
+#profile {
+    padding: 10px;
+}
+
+#user-info {
+    text-align: left;
+    width: 70%;
+}
+
+tr, th {
+    border-style: solid;
+
+}
+table {
+    border-style: solid;
+    width: 60%;
+    margin-left: 20%;
+}
