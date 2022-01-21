@@ -46,7 +46,14 @@ func (h LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 		Expires: session.Expiration,
 	}
 
+	usernameCookie := http.Cookie{
+		Name:    model.UsernameCookieName,
+		Value:   username,
+		Expires: session.Expiration,
+	}
+
 	http.SetCookie(w, &sessionCookie)
+	http.SetCookie(w, &usernameCookie)
 	log.Printf("User %s successfully logged in", username)
 	_, _ = w.Write([]byte("Login successful!"))
 }

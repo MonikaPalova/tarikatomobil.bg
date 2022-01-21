@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	SessionIDLength   = 64
-	SessionDuration   = time.Hour
-	SessionCookieName = "TARIKATOMOBIL-SESSION-ID"
+	SessionIDLength    = 64
+	SessionDuration    = time.Hour
+	SessionCookieName  = "TARIKATOMOBIL-SESSION-ID"
+	UsernameCookieName = "TARIKATOMOBIL-USERNAME"
 )
 
 type Session struct {
