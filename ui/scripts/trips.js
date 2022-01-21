@@ -44,7 +44,12 @@ function _addTrip(section, trip) {
     let minutes = ('0' + dateTime.getUTCMinutes()).slice(-2);
     tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${hours}:${minutes}</div>`);
 
-    let price = (trip.price + '0').slice(0, trip.price < 10 ? 4 : 5);
+    let price = trip.price + '';
+    if(price.includes(".")){
+    price = (trip.price + '0').slice(0, trip.price < 10 ? 4 : 5);
+    } else {
+        price += ".00";
+    }
     tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${price}лв.</div>`);
 
     // TODO
