@@ -7,9 +7,8 @@ window.addEventListener("load", function () {
 });
 
 function populateUserInfo(userInfo) {
-    console.log(userInfo);
     setPhoto(userInfo['photoId']);
-
+    setContactInfo(userInfo);
 } 
 
 function getUserInfo() {
@@ -51,4 +50,10 @@ function setPhoto(id) {
       };
     req.open('GET', "/photos/" + id, true);
     req.send();
+}
+
+function setContactInfo(userInfo) {
+    document.getElementById('username').innerHTML = 'Име: ' + userInfo.name;
+    document.getElementById('email').innerHTML = 'Имейл: ' + userInfo.email;
+    document.getElementById('phone').innerHTML = 'Телефонен номер: ' + userInfo.phoneNumber;
 }
