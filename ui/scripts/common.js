@@ -1,8 +1,8 @@
 var sessionCookieId = "TARIKATOMOBIL-SESSION-ID";
+var usernameCookieId = "TARIKATOMOBIL-USERNAME";
 
 function checkLoggedIn() {
     var session = getCookie(sessionCookieId);
-    
     return session!=null;
 }
 
@@ -22,9 +22,13 @@ function getCookie(cname) {
     return null;
 }
 
+function setCookie(cname, value) {
+    document.cookie = cname + '=' + value + '; expires=Thu, 1 Jan 2100 12:00:00 UTC; path=/';
+}
+
 function logout() {
-    console.log("logout");
-    document.cookie = sessionCookieId +'=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';  
+    document.cookie = sessionCookieId +'=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'; 
+    document.cookie = usernameCookieId +'=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';  
     window.location = "index.html";
 }
 
@@ -36,4 +40,8 @@ function onLoadHideNotLoggedIn() {
         document.querySelectorAll(".logged-in").forEach(a=>a.style.display = "none");
         document.querySelectorAll(".not-logged-in").forEach(a=>a.style.display = "initial");
     }
+}
+
+function loadError(err) {
+    console.log(err);
 }

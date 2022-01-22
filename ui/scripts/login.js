@@ -23,7 +23,7 @@ function login() {
             loadError(req.responseText);
         }
       };
-    req.open('POST', "http://localhost:80/login", true);
+    req.open('POST', "/login", true);
     req.setRequestHeader('Authorization','Basic ' + authHeader);
     req.send();
 
@@ -53,7 +53,7 @@ function register() {
             loadError(req.responseText);
         }
       };
-    req.open('POST', "http://localhost:80/users", true);
+    req.open('POST', "/users", true);
     req.send(JSON.stringify(params));
 
 }
