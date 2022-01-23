@@ -1,26 +1,36 @@
+var username;
 window.addEventListener("load", function () {
-    if (checkLoggedIn()) {
-        getUserInfo();
-    } else {
-        window.location="login.html";
+    onLoadHideNotLoggedIn();
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+
+    if (params.name == null) {
+        window.location = "index.html";
     }
+    username = params.name;
+    isThisLoggedInUser();
+    getUserInfo(username);
 });
 
-
+function isThisLoggedInUser() {
+    if (checkLoggedIn()) {
+        if (getCookie(usernameCookieId) == username) {
+            document.getElementById("logged-in-user-profile").style.display = "initial";
+            document.getElementById("not-logged-in-user-profile").style.display = "none";
+        } else {
+            document.getElementById("logged-in-user-profile").style.display = "none";
+            document.getElementById("not-logged-in-user-profile").style.display = "initial";
+        }
+    } 
+}
 
 function populateUserInfo(userInfo) {
     setPhoto(userInfo['photoId']);
     setContactInfo(userInfo);
 } 
 
-function getUserInfo() {
-    var session = getCookie(sessionCookieId);
-    var username = getCookie(usernameCookieId);
-
-    if (session == null) {
-        return null;
-    }
-
+function getUserInfo(username) {
     var req = new XMLHttpRequest();
     req.responseType = 'json';
     req.onload = function () {
@@ -91,7 +101,6 @@ function populateReviews(reviews) {
             let span = document.createElement("span");
             span.className = "fa fa-star checked";
             ratingDiv.appendChild(span);
-            //<span class="fa fa-star checked"></span>
         } 
     
         for (j ; j <5; j++) {
@@ -117,7 +126,7 @@ function populateReviews(reviews) {
 
         reviewDiv.appendChild(document.createElement("hr"));
 
-        document.getElementById("user-info").appendChild(reviewDiv);
+        document.getElementById("reviews").appendChild(reviewDiv);
 
     }
 

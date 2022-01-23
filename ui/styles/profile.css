@@ -1,12 +1,10 @@
 
 #profile-photo {
-    width: 100%;
-
+    width: 20%;
 }
 
-#photo {
+#contact-info, #photo {
     text-align: center;
-    width: 30%;
 }
 
 #photo p {
@@ -20,7 +18,6 @@
 
 #user-info {
     text-align: left;
-    width: 75%;
     padding-left: 5%;
 }
 
@@ -32,6 +29,12 @@ table {
     /* border-style: solid; */
     width: 60%;
     margin-left: 20%;
+}
+
+#info {
+    width: 60%;
+    margin-left: 20%;
+    text-align: center;
 }
 
 .rating {
@@ -48,6 +51,36 @@ table {
       line-height: 50%;
   }
 
-  /* .review {
+  .reviews {
+    overflow: auto;
+    height: 5px;
+  }
+
+  .info {
+    height: 300px;
+  }
+
+  #username {
+    margin: 0 0 0 0;
+  }
+
+  .logged-in-user-profile, .not-logged-in-user-profile {
       margin-bottom: 30px;
-  } */
+      text-align: right;
+  }
+
+  button {
+    background-color: #558d3d;
+    color: white;
+    font-weight: lighter;
+    border-style: none;
+    width: 25%;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  button:hover {
+    background-color: #ffffff;
+    color: #558d3d;
+}

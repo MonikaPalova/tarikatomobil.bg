@@ -29,13 +29,18 @@ function setCookie(cname, value) {
 function logout() {
     document.cookie = sessionCookieId +'=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'; 
     document.cookie = usernameCookieId +'=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';  
-    window.location = "index.html";
+    location.reload();
 }
 
 function onLoadHideNotLoggedIn() {
     if (checkLoggedIn()) {
         document.querySelectorAll(".logged-in").forEach(a=>a.style.display = "initial");
         document.querySelectorAll(".not-logged-in").forEach(a=>a.style.display = "none");
+
+        var profileLink = document.getElementById("my-profile-link");
+        profileLink.href = profileLink.href + "?name=" + getCookie(usernameCookieId);
+
+        console.log(profileLink.href);
     } else {
         document.querySelectorAll(".logged-in").forEach(a=>a.style.display = "none");
         document.querySelectorAll(".not-logged-in").forEach(a=>a.style.display = "initial");
