@@ -142,7 +142,7 @@ a {
     font-size: 15px;
 }
 
-#submit-btn {
+.submit-btn {
     margin-top: 30px;
     background-color: #558d3d;
     color: white;
@@ -153,12 +153,12 @@ a {
     height: 50px;
 }
 
-#submit-btn:hover {
+.submit-btn:hover {
     background-color: #ffffff;
     color: #558d3d;
 }
 
-#submit-form {
+.submit-form {
     width: 80%;
     height: 300px;
     margin: auto;

@@ -6,7 +6,6 @@
     <title>TarikatMobil.bg</title>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/login.css">
-    <script src="scripts/common.js"></script>
     <script src="scripts/login.js"></script>
 </head>
 
@@ -31,11 +30,11 @@
     </header>
 
     <section id="credentials-section">
-        <form id="submit-form" method="post" name="myform">
+        <form class="submit-form" method="post" name="myform">
             <input class="form-item" type="text" name="username" id="username" required placeholder="Име..."/>
             <input class="form-item" type="password" name="password" id="password" required placeholder="Парола..."/>
             <p id="error"></p>
-            <input id="submit-btn" type="button" value="Вход" id="submit" onclick="login()" />
+            <input class="submit-btn" type="button" value="Вход" id="submit" onclick="login()" />
         </form>
         <p>Нямате регистрация? <a class="light-bg-link" href="register.html">Регистрирайте се тук</a></p>
     </section>

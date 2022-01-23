@@ -81,15 +81,38 @@
 
   <div id="review-modal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
+      <span class="close" id = "review-close">&times;</span>
       <h2>Напиши ревю</h2>
       <div id="review-content">
-        <form id="submit-form" method="post" name="myform">
+        <form class="submit-form" method="post" name="myform">
           <textarea name="review-text" id="review-text" required placeholder="Коментар"></textarea>
           <label>Rating: </label>
           <input type="range" min="1" max="5" value="5" class="slider" id="myRange">
           <span id="value">1</span>
-          <input id="submit-btn" type="button" value="Създай ревю" id="submit" onclick="writeReview()" />
+          <input class="submit-btn" type="button" value="Създай ревю" onclick="writeReview()" />
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id = "edit-close">&times;</span>
+      <h2>Редактиране на профила</h2>
+      <div id="review-content">
+        <form class="submit-form" method="post" name="myform">
+          <div id = "picture-upload">
+            <label for="avatar">Качи профилна снимка:</label>
+            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg"/>
+          </div>
+          <input class="form-item" id="new-email" type="text" placeholder="Нов имейл..." autocomplete="off">
+          <input class="form-item" id="new-phone" type="text" placeholder="Нов телефонен номер..."
+            autocomplete="off">
+          <input class="form-item" type="password" name="password" id="new-password"
+            placeholder="Нова парола..." />
+          <p id="error"></p>
+          <input class="submit-btn" type="button" value="Редактирай" id="submit" onclick="editProfile()" />
         </form>
       </div>
     </div>

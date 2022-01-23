@@ -1,5 +1,5 @@
 var username;
-
+var imageData = "n";
 window.addEventListener("load", function () {
     onLoadHideNotLoggedIn();
     const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -13,25 +13,52 @@ window.addEventListener("load", function () {
     isThisLoggedInUser();
     getUserInfo(username);
     prepareModal();
+    const fileInput = document.getElementById("avatar");
+
+    fileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            imageData = reader.result;
+            console.log(imageData);
+        };
+        reader.readAsDataURL(file);
+    });
 });
 
 function prepareModal() {
-    var modal = document.getElementById("review-modal");
+    var reviewModal = document.getElementById("review-modal");
+    var editModal = document.getElementById("edit-modal");
 
     var reviewBtn = document.getElementById("review-btn");
-    var closeModal = document.getElementsByClassName("close")[0];
+    var editBtn = document.getElementById("edit-btn");
+    var closeModalReview = document.getElementById("review-close");
+    var closeModalEdit = document.getElementById("edit-close");
 
     reviewBtn.onclick = function () {
-        modal.style.display = "block";
+        reviewModal.style.display = "block";
     }
 
-    closeModal.onclick = function () {
-        modal.style.display = "none";
+    closeModalReview.onclick = function () {
+        reviewModal.style.display = "none";
     }
+
+    editBtn.onclick = function () {
+        editModal.style.display = "block";
+    }
+
+    closeModalEdit.onclick = function () {
+        editModal.style.display = "none";
+    }
+
 
     window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == reviewModal) {
+            reviewModal.style.display = "none";
+        }
+
+        if (event.target == editModal) {
+            editModal.style.display = "none";
         }
     }
 
@@ -103,7 +130,6 @@ function setContactInfo(userInfo) {
 }
 
 function loadReviews(username) {
-    // users/newUser/reviews?relation=for
     var req = new XMLHttpRequest();
     req.responseType = 'json';
     req.onload = function () {
@@ -193,3 +219,73 @@ function createReview(forUsername, comment, rating) {
     req.send(JSON.stringify(params));
 }
 
+function editProfile() {
+
+    var newEmail = document.getElementById("new-email").value;;
+    var newPhone = document.getElementById("new-phone").value;;
+    var newPassword = document.getElementById("new-password").value;
+
+    var params = {};
+    if (newEmail != "") {
+        params.email = newEmail;
+    }
+    if (newPhone != "") {
+        params.phoneNumber = newPhone;
+    }
+    if (newPassword != "") {
+        params.password = newPassword;
+    }
+    if (newEmail != "") {
+        params.email = newEmail;
+    }
+
+    var uploadImageReq = uploadPhotoPriorToEdit();
+    if (uploadImageReq != null) {
+        uploadImageReq.onload = function () {
+            if (uploadImageReq.status != 200) {
+                loadError("Грешка!");
+                console.log(uploadImageReq.responseText);
+            } else {
+                console.log(uploadImageReq.response);
+                params.photoId = uploadImageReq.response.id;
+                editRequest(params);
+            }
+        };
+    } else {
+        editRequest(params);
+    }
+
+}
+
+function editRequest(params) {
+    console.log(params);
+
+    var req = new XMLHttpRequest();
+
+    req.onload = function () {
+        if (req.status != 200) {
+            loadError("Грешка!");
+            console.log(req.responseText);
+        } else {
+            location.reload();
+        }
+    };
+    req.open('PATCH', "/users/" + username, true);
+    req.send(JSON.stringify(params));
+}
+
+function uploadPhotoPriorToEdit() {
+    if (imageData != "n") {
+        var req = new XMLHttpRequest();
+        req.responseType = 'json';
+        var params = {
+            "base64Content": imageData
+        }
+        req.open('POST', "/photos", true);
+        req.send(JSON.stringify(params));
+
+        return req;
+    } else {
+        return null;
+    }
+}

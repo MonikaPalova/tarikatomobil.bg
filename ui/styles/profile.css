@@ -97,3 +97,9 @@ textarea {
 #value {
     margin-bottom: 10px;
 }
+
+#picture-upload {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;;
+}
