@@ -20,16 +20,6 @@
     padding-left: 5%;
 }
 
-/* tr, th {
-    border-style: solid;
-
-} */
-table {
-    /* border-style: solid; */
-    width: 60%;
-    margin-left: 20%;
-}
-
 #info {
     width: 60%;
     margin-left: 20%;
@@ -102,4 +92,13 @@ textarea {
     width: 100%;
     text-align: left;
     margin-bottom: 10px;;
+}
+
+#reviews {
+    width: 60%;
+    margin-left: 20%;
+}
+
+#reviews-header {
+    margin-left: 20%;
 }
