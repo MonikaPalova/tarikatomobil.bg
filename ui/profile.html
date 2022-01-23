@@ -7,7 +7,10 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="styles/profile.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="scripts/common.js"></script>
+  <script src="scripts/reviews.js"></script>
   <script src="scripts/profile.js"></script>
 </head>
 
@@ -52,29 +55,47 @@
   </header>
 
   <section id="profile">
-    <div id = "info">
+    <div id="info">
       <div id="photo">
-          <img id="profile-photo"/>
-          <div id = "contact-info">
-            <h1 id="username"></h1>
-            <p id="email"></p>
-            <p id="phone"></p>
-            <p id="driver"></p>
-            <p id="passenger"></p>
-          </div>
+        <img id="profile-photo" />
+        <div id="contact-info">
+          <h1 id="username"></h1>
+          <p id="email"></p>
+          <p id="phone"></p>
+          <p id="driver"></p>
+          <p id="passenger"></p>
+        </div>
       </div>
       <div id="logged-in-user-profile" class="logged-in">
         <button id="edit-btn">Редактирай</button>
       </div>
       <div id="not-logged-in-user-profile" class="logged-in">
-        <button id="edit-btn">Напиши ревю</button>
+        <button id="review-btn">Напиши ревю</button>
       </div>
       <div id="user-info">
         <h1>Ревюта:</h1>
-        <div id = "reviews"></div>
+        <div id="reviews"></div>
       </div>
     </div>
   </section>
+
+  <div id="review-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Напиши ревю</h2>
+      <div id="review-content">
+        <form id="submit-form" method="post" name="myform">
+          <textarea name="review-text" id="review-text" required placeholder="Коментар"></textarea>
+          <label>Rating: </label>
+          <input type="range" min="1" max="5" value="5" class="slider" id="myRange">
+          <span id="value">1</span>
+          <input id="submit-btn" type="button" value="Създай ревю" id="submit" onclick="writeReview()" />
+        </form>
+      </div>
+    </div>
+
+  </div>
+
 </body>
 
 </html>

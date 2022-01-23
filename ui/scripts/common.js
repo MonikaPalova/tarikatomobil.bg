@@ -48,5 +48,5 @@ function onLoadHideNotLoggedIn() {
 }
 
 function loadError(err) {
-    console.log(err);
+    alert(err);
 }
