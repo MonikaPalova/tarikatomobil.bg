@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TarikatMobil.bg</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/cars.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/car.js"></script>
+</head>
+
+<body>
+    <header id="main-header">
+        <a href="index.html">
+            <h1 class="dark-bg-link">TarikatMobil</h1>
+        </a>
+        <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
+        <div id="search-container">
+            <form action="">
+                <input id="search-input" type="text" placeholder="Търси.." name="search" />
+            </form>
+        </div>
+        <nav class="not-logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" id="my-profile-link" href="profile.html">Профил</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="myReviews.html">Моите ревюта</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="myTrips.html">Моите пътувания</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="myCar.html">Моята кола</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="car-details">
+        <div id="car-info">
+            <img id = "car-photo" />
+            <h3 id = "reg-num"></h3>
+            <p id = "comment"></p>
+            <button class="submit-btn" id="delete-btn" onclick="deleteCar()">Изтрий</button>
+            <button class="submit-btn">Редактирай</button>
+        </div>
+        <div>
+            
+        </div>
+    </section>
+    <section id="create-car">
+        <h2 id="section-header">Добави автомобил в системата</h2>
+        <form class="submit-form" method="post" id="create-car-form" name="myform">
+            <div id="picture-upload">
+                <label for="avatar">Снимка:</label>
+                <input type="file" id="car-img" name="car-img" accept="image/png, image/jpeg" />
+            </div>
+            <input class="form-item" id="reg" type="text" placeholder="Регистрационен номер..." required autocomplete="off">
+            <textarea name="review-text" id="comment-input" placeholder="Коментар"></textarea>
+            <p id="error"></p>
+            <input class="submit-btn" type="button" value="Създай" id="submit" onclick="createCar()" />
+        </form>
+    </section>
+
+</body>
+
+</html>

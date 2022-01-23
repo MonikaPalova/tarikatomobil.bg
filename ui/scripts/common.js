@@ -55,3 +55,9 @@ function onLoadHideNotLoggedIn() {
 function loadError(err) {
     alert(err);
 }
+
+function removeChildren(obj) {
+    while (obj.firstChild) {
+        obj.removeChild(obj.firstChild);
+    }
+}
