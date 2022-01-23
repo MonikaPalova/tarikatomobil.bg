@@ -15,7 +15,7 @@ function _loadTrips(trips) {
 
 function _addTrip(section, trip) {
     var tripObj = document.createElement("div");
-    tripObj.className = "row coloured-field centered-field trip";
+    tripObj.className = "row coloured-field centered-field trip-short";
 
     var fromTo = document.createElement("p");
     fromTo.innerHTML = `${trip.from} - ${trip.to}`;
@@ -23,7 +23,7 @@ function _addTrip(section, trip) {
     tripObj.appendChild(fromTo);
 
     var tripDetails = document.createElement("div");
-    tripDetails.className = "trip-details row";
+    tripDetails.className = "trip-short-details row";
 
     if (trip.smoking) {
         tripDetails.insertAdjacentHTML('afterbegin', `<img class="icon" src="images/cig.png" />`);
@@ -35,34 +35,49 @@ function _addTrip(section, trip) {
         tripDetails.insertAdjacentHTML('afterbegin', `<img class="icon" src="images/paw.png" />`);
     }
 
-    var dateTime = new Date(Date.parse(trip.when));
-    let date = ('0' + dateTime.getUTCDate()).slice(-2);
-    let month = ('0' + (dateTime.getUTCMonth() + 1)).slice(-2);
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${date}.${month}.${dateTime.getUTCFullYear()}</div>`);
-
-    let hours = ('0' + (dateTime.getUTCHours() + 2)).slice(-2);
-    let minutes = ('0' + dateTime.getUTCMinutes()).slice(-2);
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${hours}:${minutes}</div>`);
-
-    let price = trip.price + '';
-    if(price.includes(".")){
-    price = (trip.price + '0').slice(0, trip.price < 10 ? 4 : 5);
-    } else {
-        price += ".00";
-    }
-    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-detail trip-detail-string">${price}лв.</div>`);
-
-    // TODO
-    tripDetails.insertAdjacentHTML('beforeend', `<a  class="trip-detail" href="ADD_URL_TO_THIS_TRIP"><img src="images/open.svg"/></a>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-short-detail trip-short-detail-string">${_parseDate(trip.when)}</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-short-detail trip-short-detail-string">${_parseTime(trip.when)}</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<div class="trip-short-detail trip-short-detail-string">${_parsePrice(trip.price)}</div>`);
+    tripDetails.insertAdjacentHTML('beforeend', `<a  class="trip-short-detail" href="trip.html?id=${trip.id}"><img src="images/open.svg"/></a>`);
 
     tripObj.appendChild(tripDetails);
 
     section.appendChild(tripObj);
 }
 
+function _parsePrice(priceFloat) {
+    let price = priceFloat + '';
+    if (price.includes(".")) {
+        price = (price + '0').slice(0, price < 10 ? 4 : 5);
+    } else {
+        price += ".00";
+    }
 
-function _showError(msg) {
-    var tripsSection = document.getElementById("trips");
+    return price + "лв.";
+}
+
+function _parseDate(dateTimeStr) {
+    let dateTime = new Date(Date.parse(dateTimeStr));
+    let date = ('0' + dateTime.getUTCDate()).slice(-2);
+    let month = ('0' + (dateTime.getUTCMonth() + 1)).slice(-2);
+
+    return date + "." + month + "." + dateTime.getUTCFullYear();
+}
+
+function _parseTime(dateTimeStr) {
+    let dateTime = new Date(Date.parse(dateTimeStr));
+    let hours = ('0' + (dateTime.getUTCHours() + 2)).slice(-2);
+    let minutes = ('0' + dateTime.getUTCMinutes()).slice(-2);
+
+    return hours + ":" + minutes;
+}
+
+function _parseDateTime(dateTimeStr) {
+    return _parseDate(dateTimeStr) + ", " + _parseTime(dateTimeStr);
+}
+
+function _showError(boxId,msg) {
+    var tripsSection = document.getElementById(boxId);
     _removeChildren(tripsSection);
 
     var error = document.createElement("p");
@@ -72,8 +87,8 @@ function _showError(msg) {
     tripsSection.appendChild(error);
 }
 
-function _showNotification(msg) {
-    var tripsSection = document.getElementById("trips");
+function _showNotification(boxId,msg) {
+    var tripsSection = document.getElementById(boxId);
     _removeChildren(tripsSection);
 
     var notification = document.createElement("p");

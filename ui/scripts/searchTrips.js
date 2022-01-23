@@ -1,6 +1,5 @@
 // on load logic
 window.addEventListener("load", function () {
-    onLoadHideNotLoggedIn();
     _readCities();
     filterTrips();
 });
@@ -56,7 +55,13 @@ function _getTripsRequest(tripsURL) {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
 
             var trips = JSON.parse(xhr.responseText);
-            _loadTrips(trips);
+            if (trips.length == 0) {
+                _showNotification("trips","Няма пътувания, които съответсват на търсенето.");
+            } else {
+                _loadTrips(trips);
+            }
+        } else if(xhr.status === 400){
+            _showError("trips","Има проблем със взимането на пътувания. Моля, свържете се с администратор.")
         }
     };
     xhr.open(method, url, true);
@@ -78,20 +83,21 @@ function filterTrips() {
 
     let builder = new TripsURLBuilder();
 
-    // from, to, before, after, maxPrice, airConditioning, smoking, pets
     let from = document.getElementById("start-destination").value;
     let to = document.getElementById("end-destination").value;
-    // TODO before, after
     var dateStr = document.getElementById("trip-date").value;
     if (dateStr != "") {
         let date = new Date(dateStr);
         if (date.valueOf() < new Date().setHours(0, 0, 0, 0).valueOf()) {
-            _showError("Датата за пътуване не може да бъде в миналото");
+            _showError("trips","Датата за пътуване не може да бъде в миналото");
             return;
         }
         let before = _formatDate(new Date(date.getTime() + 28 * 60 * 60 * 1000));
         let after = _formatDate(new Date(date.getTime() - 20 * 60 * 60 * 1000));
         builder = builder.setBefore(before).setAfter(after);
+    } else {
+        let after = _formatDate(new Date());
+        builder = builder.setAfter(after);
     }
     let maxPrice = document.getElementById("maxprice").value;
     let airConditioning = _determineBooleanParam("air-conditioning-yes", "air-conditioning-no");
@@ -107,7 +113,6 @@ function filterTrips() {
         .setPets(pets) //
         .fetch();
 
-    console.log(url);
     _getTripsRequest(url);
 }
 

@@ -1,0 +1,84 @@
+#trip {
+    width: 60%;
+}
+
+#trip-details {
+    margin: 1% 4%;
+}
+
+#comment {
+    overflow-wrap: break-word;
+    width: 70%;
+}
+
+.trip-destination-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0% 3%;
+    padding: 1% 5%;
+}
+
+.trip-destination-header>* {
+    padding: 0%;
+    padding-left: 1%;
+    font-size: 1.5rem;
+}
+
+#trip-details .trip-detail {
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+#trip-details .trip-detail>* {
+    margin: 0;
+}
+
+#trip-details .trip-detail>label {
+    width: 22%;
+}
+
+#passengers {
+    padding: 1% 5%;
+}
+
+#passengers>header {
+    font-size: 1.3rem;
+}
+
+#buttons>button {
+    background-color: #cdf9c4;
+    border: 3px solid #cdf9c4;
+    cursor: pointer;
+    margin: 0% 1%;
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 3% 2%;
+}
+
+#buttons>button:hover {
+    background-color: #E6FCE2;
+}
+
+#buttons {
+    width: 40%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#trip-locations {
+    width: 30%;
+}
+
+.passenger {
+    width: 30%;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1% 0%;
+}
+
+.passenger>* {
+    margin: 1% 2%;
+    padding: 2% 3%;
+}

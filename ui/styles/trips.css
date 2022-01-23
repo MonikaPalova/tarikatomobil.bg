@@ -58,7 +58,7 @@ label {
     margin: 0 2%;
 }
 
-.trip {
+.trip-short {
     width: 50%;
     padding: 0 2%;
     border-radius: 20px;
@@ -66,19 +66,19 @@ label {
     justify-content: space-between;
 }
 
-.trip-detail-string {
+.trip-short-detail-string {
     background-color: #3da459;
     border-radius: 20px;
     color: white;
 }
 
-.trip-detail {
+.trip-short-detail {
     align-self: center;
     padding: 3% 4%;
     margin-left: 5%;
 }
 
-.trip-details {
+.trip-short-details {
     display: flex;
     justify-content: flex-end;
     width: 40%;

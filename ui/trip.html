@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Пътуване</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/trips.css">
+    <link rel="stylesheet" href="styles/trip.css">
+</head>
+
+<body>
+    <header id="main-header">
+        <a href="index.html">
+            <h1 class="dark-bg-link">TarikatMobil</h1>
+        </a>
+        <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
+        <div id="search-container">
+            <form action="">
+                <input id="search-input" type="text" placeholder="Търси.." name="search" />
+            </form>
+        </div>
+        <nav class="not-logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" id="my-profile-link" href="profile.html">Профил</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="">Моите ревюта</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="myTrips.html">Моите пътувания</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="">Моята кола</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="trip" class="coloured-field centered-field">
+        <header class="row trip-destination-header">
+            <div id="trip-locations" class="row">
+                <p id="from"></p>
+                <img src="images/arrow_forward.svg" />
+                <p id="to"></p>
+            </div>
+            <div id="buttons" class="row">
+
+            </div>
+        </header>
+        <div id="error-box">
+            </div>
+        <div id="trip-details" class="column">
+            <div class="row trip-detail">
+                <label for="when">Кога:</label>
+                <p id="when"></p>
+            </div>
+            <div class="row trip-detail">
+                <label for="driver">Шофьор:</label>
+                <p id="driver"></p>
+                <a id="driver-link" href=""><img src="images/person.svg" /></a>
+            </div>
+            <div class="row trip-detail">
+                <label for="price">Цена:</label>
+                <p id="price"></p>
+            </div>
+            <div class="row trip-detail">
+                <label for="air-conditioning">Климатик:</label>
+                <p id="airConditioning"></p>
+            </div>
+            <div class="row trip-detail">
+                <label for="smoking">Пушене:</label>
+                <p id="smoking"></p>
+            </div>
+            <div class="row trip-detail">
+                <label for="pets">Домашни любимци:</label>
+                <p id="pets"></p>
+            </div>
+            <div class="row trip-detail">
+                <label for="comment">Коментар от водача: </label>
+                <p id="comment"></p>
+            </div>
+        </div>
+        <section id="passengers">
+        </section>
+
+    </section>
+</body>
+
+<script src="scripts/common.js"></script>
+<script type="text/javascript" src="./scripts/trips.js"></script>
+<script type="text/javascript" src="./scripts/trip.js"></script>
+
+</html>

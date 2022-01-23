@@ -1,8 +1,7 @@
 // on load logic
 window.addEventListener("load", function () {
-    onLoadHideNotLoggedIn();
     if (!checkLoggedIn()) {
-        _showError("Трябва да сте влезли в профила си, за да достъпите тази страница.");
+        _showError("trips","Трябва да сте влезли в профила си, за да достъпите тази страница.");
         return;
     }
 
@@ -28,11 +27,13 @@ function _getMyTripsRequest(isDriver) {
             if (trips.length == 0) {
                 let msg = "Не сте планирали участие в пътуване. ";
                 msg += isDriver == "true" ? "Създайте ново пътуване и опитайте отново." : "Запишете се в някое пътуване и опитайте отново.";
-                _showNotification(msg);
+                _showNotification("trips",msg);
             } else {
                 _loadTrips(trips);
             }
         }
+
+        // TODO handle 401? not needed maybe
     };
     xhr.open(method, url, true);
     xhr.send();
