@@ -134,7 +134,7 @@ function _addDriverButtons() {
     }
     let buttons = document.getElementById("buttons");
 
-    buttons.insertAdjacentHTML('beforeend', `<button onclick="deleteTrip()" class="trip-button">Изтрии пътуване</button>`);
+    buttons.insertAdjacentHTML('beforeend', `<button onclick="deleteTrip()" class="trip-button">Изтрий пътуване</button>`);
 }
 
 function _addAddReviewButton() {
@@ -275,7 +275,7 @@ function _deleteTripRequest() {
         } else if (xhr.status === 404) {
             _showError("error-box", "Вие не притежавате това пътуване или то вече е изтрито.");
         } else if (xhr.status === 409) {
-            _showError("error-box", "Има записани пътници в това пътуване. Моля, изтриите ги, за да продължите.");
+            _showError("error-box", "Има записани пътници в това пътуване. Моля, изтрийте ги, за да продължите.");
         }
     };
     xhr.open(method, url, true);

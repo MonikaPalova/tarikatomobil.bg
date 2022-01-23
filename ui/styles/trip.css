@@ -81,4 +81,6 @@
 .passenger>* {
     margin: 1% 2%;
     padding: 2% 3%;
+    background: none;
+    border: none;
 }
