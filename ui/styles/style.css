@@ -3,6 +3,10 @@
     color: #000000;
 }
 
+button, a, input {
+    cursor: pointer;
+}
+
 body {
     background-color: #cdf9c4;
     margin: 0;

@@ -59,7 +59,7 @@
             <h3 id = "reg-num"></h3>
             <p id = "comment"></p>
             <button class="submit-btn" id="delete-btn" onclick="deleteCar()">Изтрий</button>
-            <button class="submit-btn">Редактирай</button>
+            <button class="submit-btn" id="edit-btn">Редактирай</button>
         </div>
         <div>
             
@@ -78,6 +78,22 @@
             <input class="submit-btn" type="button" value="Създай" id="submit" onclick="createCar()" />
         </form>
     </section>
+
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+          <span class="close" id = "edit-close">&times;</span>
+          <h2>Редактиране на автомобил</h2>
+          <div id="car-content">
+            <form class="submit-form" method="post" name="myform">
+              <div id = "picture-upload">
+                <label for="avatar">Качи снимка:</label>
+                <input type="file" id="car-img-edit" name="avatar" accept="image/png, image/jpeg"/>
+              </div>
+              <textarea name="review-text" id="comment-edit" required placeholder="Коментар"></textarea>
+              <input class="submit-btn" type="button" value="Редактирай" id="submit" onclick="editCar()" />
+            </form>
+          </div>
+        </div>
 
 </body>
 
