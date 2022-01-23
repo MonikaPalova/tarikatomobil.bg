@@ -6,6 +6,7 @@
   <title>TarikatMobil.bg</title>
   <link rel="stylesheet" href="styles/style.css">
   <link rel="stylesheet" href="styles/profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="scripts/common.js"></script>
   <script src="scripts/profile.js"></script>
 </head>
@@ -25,7 +26,7 @@
     <nav class="logged-in">
       <ul id="navigation-list">
         <li>
-          <a class="dark-bg-link" href="profile.html">Профил</a>
+          <a class="dark-bg-link" href="myProfile.html">Профил</a>
         </li>
         <li>
           <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
@@ -34,19 +35,35 @@
     </nav>
   </header>
 
-  <section id = "profile">
-      <table>
-          <tr>
-              <th id="photo">
-                <img id="profile-photo"/>
-              </th>
-              <th id="user-info">
-                  <p id = "username"></p>
-                  <p id = "email"></p>
-                  <p id = "phone"></p>
-              </th>
-          </tr>
-      </table>
+  <section id="profile">
+    <table>
+      <tr>
+        <th id="photo">
+          <img id="profile-photo" />
+          <h1 id="username"></h1>
+          <p id="email"></p>
+          <p id="phone"></p>
+          <p id="driver"></p>
+          <p id="passenger"></p>
+        </th>
+        <th id="user-info">
+          <h1>Reviews:</h1>
+          <!-- <div class="review">
+            <div class="rating">
+              <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star"></span>
+            <span class="fa fa-star"></span>
+            </div>
+            <div>
+              <h2>Really bad experience - would not repeat</h2>
+              <p class="reviewer">newUser2</p>
+            </div>
+          </div> -->
+        </th>
+      </tr>
+    </table>
   </section>
 </body>
 
