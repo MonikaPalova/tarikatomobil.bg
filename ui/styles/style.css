@@ -213,3 +213,14 @@ a {
     background: #f19f06;
     cursor: pointer;
 }
+
+.delete-btn {
+    margin-top: 30px;
+    background-color: #860d0d;
+    color: white;
+    font-size: 15px;
+    font-weight: lighter;
+    border-style: none;
+    width: 5%;
+    height: 30px;
+}
