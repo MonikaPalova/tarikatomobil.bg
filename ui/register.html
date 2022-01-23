@@ -6,19 +6,18 @@
     <title>TarikatMobil.bg</title>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/login.css">
-    <script src="scripts/login.js"></script>
 </head>
 
 <body>
     <header id="main-header">
         <a href="index.html">
-          <h1 class="dark-bg-link">TarikatMobil</h1>
+            <h1 class="dark-bg-link">TarikatMobil</h1>
         </a>
         <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
         <div id="search-container">
-          <form action="">
-            <input id="search-input" type="text" placeholder="Търси.." name="search" />
-          </form>
+            <form action="">
+                <input id="search-input" type="text" placeholder="Търси.." name="search" />
+            </form>
         </div>
         <nav class="not-logged-in">
             <ul id="navigation-list">
@@ -34,7 +33,8 @@
             <input class="form-item" type="text" name="username" id="username" required placeholder="Име..."/>
             <input class="form-item" type="password" name="password" id="password" required placeholder="Парола..."/>
             <input class="form-item" id="email" type="text" placeholder="Имейл..." required autocomplete="off">
-            <input class="form-item" id="phone" type="text" placeholder="Телефонен номер..." required autocomplete="off">
+            <input class="form-item" id="phone" type="text" placeholder="Телефонен номер..." required
+                autocomplete="off">
             <p id="error"></p>
             <input class="submit-btn" type="button" value="Регистрация" id="submit" onclick="register()" />
         </form>
@@ -42,5 +42,8 @@
     </section>
 
 </body>
+
+<script src="scripts/common.js"></script>
+<script src="scripts/login.js"></script>
 
 </html>

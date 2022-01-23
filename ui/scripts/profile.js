@@ -1,7 +1,6 @@
 var username;
 var imageData = "n";
 window.addEventListener("load", function () {
-    onLoadHideNotLoggedIn();
     const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
     });
