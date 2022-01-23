@@ -8,41 +8,6 @@ document.getElementById("search-trips").addEventListener("submit", function (e) 
     e.preventDefault();
 });
 
-// Cities list logic
-
-var CITIES;
-
-function _readCities() {
-    var xhr = new XMLHttpRequest(),
-        method = 'GET',
-        overrideMimeType = 'application/json',
-        scheme = 'HTTP',
-        url = '../cities.json';
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-
-            CITIES = JSON.parse(xhr.responseText).cities;
-            _loadCities();
-        }
-    };
-    xhr.open(method, url, true);
-    xhr.send();
-};
-
-function _loadCities() {
-    var citiesList = document.getElementById("cities-list");
-
-    _removeChildren(citiesList);
-    CITIES.forEach(city => _addCity(citiesList, city));
-};
-
-function _addCity(list, city) {
-    var option = document.createElement('option');
-    option.value = city.name;
-    list.appendChild(option);
-}
-
 // GET 
 function _getTripsRequest(tripsURL) {
     var xhr = new XMLHttpRequest(),

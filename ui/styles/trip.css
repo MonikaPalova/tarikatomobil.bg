@@ -46,7 +46,7 @@
     font-size: 1.3rem;
 }
 
-#buttons>button {
+.trip-button {
     background-color: #cdf9c4;
     border: 3px solid #cdf9c4;
     cursor: pointer;
@@ -56,7 +56,7 @@
     padding: 3% 2%;
 }
 
-#buttons>button:hover {
+.trip-button:hover {
     background-color: #E6FCE2;
 }
 

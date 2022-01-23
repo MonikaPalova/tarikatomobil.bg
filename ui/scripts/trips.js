@@ -76,7 +76,7 @@ function _parseDateTime(dateTimeStr) {
     return _parseDate(dateTimeStr) + ", " + _parseTime(dateTimeStr);
 }
 
-function _showError(boxId,msg) {
+function _showError(boxId, msg) {
     var tripsSection = document.getElementById(boxId);
     _removeChildren(tripsSection);
 
@@ -87,7 +87,7 @@ function _showError(boxId,msg) {
     tripsSection.appendChild(error);
 }
 
-function _showNotification(boxId,msg) {
+function _showNotification(boxId, msg) {
     var tripsSection = document.getElementById(boxId);
     _removeChildren(tripsSection);
 
@@ -96,4 +96,39 @@ function _showNotification(boxId,msg) {
     notification.innerHTML = msg;
 
     tripsSection.appendChild(notification);
+}
+
+// Cities list logic
+
+var CITIES;
+
+function _readCities() {
+    var xhr = new XMLHttpRequest(),
+        method = 'GET',
+        overrideMimeType = 'application/json',
+        scheme = 'HTTP',
+        url = '../cities.json';
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+
+            CITIES = JSON.parse(xhr.responseText).cities;
+            _loadCities();
+        }
+    };
+    xhr.open(method, url, true);
+    xhr.send();
+};
+
+function _loadCities() {
+    var citiesList = document.getElementById("cities-list");
+
+    _removeChildren(citiesList);
+    CITIES.forEach(city => _addCity(citiesList, city));
+};
+
+function _addCity(list, city) {
+    var option = document.createElement('option');
+    option.value = city.name;
+    list.appendChild(option);
 }

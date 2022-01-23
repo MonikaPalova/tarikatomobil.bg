@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Създай пътуване</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/trips.css">
+    <link rel="stylesheet" href="styles/trip.css">
+    <link rel="stylesheet" href="styles/createTrip.css">
+</head>
+
+<body>
+    <header id="main-header">
+        <a href="index.html">
+            <h1 class="dark-bg-link">TarikatoMobil</h1>
+        </a>
+        <img id="logo-img" class="left-aligned" src="images/car_logo.png" />
+        <div id="search-container">
+            <form action="">
+                <input id="search-input" type="text" placeholder="Търси.." name="search" />
+            </form>
+        </div>
+        <nav class="not-logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" href="login.html">Вход/Регистрация</a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="logged-in">
+            <ul id="navigation-list">
+                <li>
+                    <a class="dark-bg-link" id="my-profile-link" href="profile.html">Профил</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="">Моите ревюта</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="myTrips.html">Моите пътувания</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="">Моята кола</a>
+                </li>
+                <li>
+                    <a class="dark-bg-link" href="" onclick="logout()">Изход</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <form id="create-trip" class="column coloured-field centered-field" onsubmit="createTrip()">
+        <header class="row trip-destination-header">
+            <p>Ново пътуване</p>
+            <input type="submit" class="trip-button" value="Създай" id="create-trip-button"></input>
+        </header>
+        <div id="error-box">
+        </div>
+
+        <div id="trip-details" class="column">
+            <div class="row trip-detail">
+                <label for="from">От:</label>
+                <input list="cities-list" id="from" />
+            </div>
+            <div class="row trip-detail">
+                <label for="to">До:</label>
+                <input list="cities-list" id="to" />
+            </div>
+            <datalist id="cities-list"></datalist>
+            <div class="row trip-detail">
+                <label for="when">Кога:</label>
+                <input type="datetime-local" id="when" />
+            </div>
+            <div class="row trip-detail">
+                <label for="price">Цена:</label>
+                <input type="number" min="0" max="50" step="0.1" id="price" />
+            </div>
+            <div class="row trip-detail">
+                <label for="max-passengers">Брой места:</label>
+                <input type="number" min="1" step="1" id="max-passengers" />
+            </div>
+            <div class="row trip-detail">
+                <label for="air-conditioning">Климатик:</label>
+                <input type="checkbox" id="air-conditioning">
+            </div>
+            <div class="row trip-detail">
+                <label for="smoking">Пушене:</label>
+                <input type="checkbox" id="smoking">
+            </div>
+            <div class="row trip-detail">
+                <label for="pets">Домашни любимци:</label>
+                <input type="checkbox" id="pets">
+            </div>
+            <div class="row trip-detail">
+                <label for="comment">Допълнителен коментар: </label>
+                <input type="text" id="comment" />
+            </div>
+        </div>
+        <section id="passengers">
+        </section>
+
+    </form>
+</body>
+
+<script src="scripts/common.js"></script>
+<script type="text/javascript" src="./scripts/trips.js"></script>
+<script type="text/javascript" src="./scripts/createTrip.js"></script>
+
+</html>
