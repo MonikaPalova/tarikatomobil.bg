@@ -141,7 +141,7 @@ function _addAddReviewButton() {
     let buttons = document.getElementById("buttons");
 
     let driver = document.getElementById("driver").innerHTML;
-    buttons.insertAdjacentHTML('beforeend', `<button onclick="location.href='/profile.html?name=${driver}'">Напиши ревю</button>`);
+    buttons.insertAdjacentHTML('beforeend', `<button onclick="location.href='/profile.html?name=${driver}'" class="trip-button">Напиши ревю</button>`);
 }
 
 function _addPassengers() {
